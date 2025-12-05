@@ -11,7 +11,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Hide Streamlit's default UI elements
 hide_st_style = """
             <style>
             #MainMenu {visibility: hidden;}
@@ -38,9 +37,7 @@ html_code = """
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Did I Bring It?</title>
     
-    <!-- FAVICON -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%232A4298'/%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z' fill='white'/%3E%3C/svg%3E">
-
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     
@@ -104,7 +101,6 @@ html_code = """
         .icon-btn { background: none; border: none; font-size: 1rem; display: flex; align-items: center; cursor: pointer; color: var(--text-dark); }
         .content-center { display: flex; flex-direction: column; align-items: center; padding: 20px; width: 100%; }
 
-        /* TRASH */
         .trash-container { 
             display: flex; justify-content: center; align-items: center;
             padding: 20px; transition: transform 0.2s; margin-bottom: 20px; margin-top: 10px;
@@ -114,7 +110,6 @@ html_code = """
         .trash-container.trash-hover .trash-icon { color: #ff5252; }
         .hint-text { text-align: center; color: #888; font-size: 0.8rem; margin-top: 10px; }
 
-        /* USER ICONS */
         .profile-icon-mini { 
             width: 45px !important; height: 45px !important; 
             border-radius: 50%; background: #87CEEB; 
@@ -133,30 +128,43 @@ html_code = """
         .avatar-large-circle { background-color: #6495ED; display: flex; justify-content: center; align-items: flex-end; }
         .avatar-large img, .avatar-large-circle img { width: 100%; height: 100%; object-fit: cover; }
 
+        /* AVATAR GRID */
         .avatar-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
         .avatar-option { width: 70px; height: 70px; border-radius: 50%; background-color: #ddd; overflow: hidden; border: 3px solid transparent; cursor: pointer; }
         .avatar-option.selected { border-color: #fff; box-shadow: 0 0 0 3px var(--primary-blue); }
         .avatar-option img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* ACCOUNT SWITCHER */
+        /* LIST CATEGORY GRID (NEW) */
+        .category-label { font-size: 0.9rem; font-weight: 500; color: #666; margin-bottom: 10px; align-self: flex-start; margin-left: 5px; }
+        .category-grid { 
+            display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; width: 100%; 
+            margin-bottom: 20px; scrollbar-width: none; 
+        }
+        .category-grid::-webkit-scrollbar { display: none; }
+        .category-option {
+            width: 50px; height: 50px; border-radius: 50%; 
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; flex-shrink: 0; border: 3px solid transparent;
+            transition: transform 0.2s;
+        }
+        .category-option.selected { border-color: var(--primary-blue); transform: scale(1.1); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .category-option span { color: white; font-size: 24px; }
+
         .switch-accounts-section { width: 100%; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 20px; margin-top: 10px; text-align: center; }
         .users-row { display: flex; justify-content: center; gap: 15px; margin-top: 10px; flex-wrap: wrap; }
         .small-user-avatar { width: 50px; height: 50px; border-radius: 50%; overflow: hidden; cursor: grab; border: 2px solid transparent; }
         .small-user-avatar.active-user { border-color: var(--primary-blue); box-shadow: 0 0 10px rgba(42, 66, 152, 0.3); }
         .small-user-avatar img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
 
-        /* FORMS */
         .input-group { width: 100%; display: flex; justify-content: center; }
         .underline-input { background: transparent; border: none; border-bottom: 2px solid var(--text-dark); text-align: center; font-size: 1.5rem; padding: 10px; width: 80%; margin-bottom: 30px; outline: none; font-weight: 500; }
         .input-field { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #ddd; background: #fff; font-size: 1rem; margin-bottom: 15px; outline: none; }
 
-        /* BUTTONS */
         .button-row { display: flex; gap: 20px; justify-content: center; width: 100%; }
         .btn-primary { background-color: var(--button-blue); padding: 12px 30px; border-radius: 12px; border: none; cursor: pointer; font-weight: 600; font-size: 1rem; width: 130px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .btn-secondary { background-color: #fff; padding: 12px 30px; border-radius: 12px; border: none; cursor: pointer; font-weight: 500; font-size: 1rem; width: 130px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .btn-icon-small { background: var(--primary-blue); color: white; border: none; border-radius: 8px; width: 45px; cursor: pointer; display: flex; justify-content: center; align-items: center; }
 
-        /* CALENDAR */
         .calendar-card { background: #fff; margin: 10px 20px; border-radius: 25px; padding: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .calendar-days, .calendar-grid-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; margin-bottom: 15px; }
@@ -168,7 +176,6 @@ html_code = """
         .time-row { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f0f0f0; padding-top: 15px; width: 100%; }
         .chip-gray { background: #eee; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 500; }
 
-        /* LISTS & REMINDERS */
         .reminders-section { padding: 0 20px 50px 20px; }
         .reminders-section h4 { margin: 15px 0; font-size: 1.1rem; font-weight: 600; }
         .reminder-card { 
@@ -185,13 +192,16 @@ html_code = """
 
         .icon-box { width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
         .icon-box span { color: white; font-size: 24px; }
+        
+        /* Category Colors */
         .bg-purple { background: #D1C4E9; } .bg-purple span { color: #5E35B1; }
         .bg-orange { background: #FFE0B2; } .bg-orange span { color: #FB8C00; }
         .bg-green { background: #C8E6C9; } .bg-green span { color: #43A047; }
         .bg-blue { background: #BBDEFB; } .bg-blue span { color: #1976D2; }
         .bg-gray { background: #90A4AE; } .bg-gray span { color: #37474F; }
+        .bg-red { background: #ffcdd2; } .bg-red span { color: #c62828; }
+        .bg-teal { background: #b2dfdb; } .bg-teal span { color: #00695c; }
 
-        /* CHECKLIST */
         .checklist-content { padding: 20px 40px; }
         .big-title { font-size: 2.5rem; font-weight: 600; margin-bottom: 10px; }
         .tags-row { display: flex; gap: 10px; margin-bottom: 40px; }
@@ -352,7 +362,6 @@ html_code = """
                 <h1 class="big-title" id="cl-title">Title</h1>
                 <div class="tags-row">
                     <span class="tag" id="cl-date">Date</span>
-                    <!-- Time with AM/PM -->
                     <span class="tag" id="cl-time">Time</span>
                 </div>
             </div>
@@ -388,6 +397,10 @@ html_code = """
                 <label>List Title</label>
                 <input type="text" id="new-list-title" class="input-field" placeholder="e.g. Gym, Work">
                 
+                <!-- NEW: Category Icon Selection -->
+                <div class="category-label">Choose Icon</div>
+                <div id="list-category-grid" class="category-grid"></div>
+
                 <label>Date & Time</label>
                 <div style="display: flex; gap: 10px;">
                     <input type="date" id="new-list-date" class="input-field">
@@ -411,26 +424,26 @@ html_code = """
 </div>
 
 <script>
-// --- DATA ISOLATION LOGIC ---
-let users = [
-    { id: 1, name: "Adrian", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Adrian" }
-];
-let activeUserId = 1;
+// --- DATA INIT ---
+// Start with empty users!
+let users = [];
+let activeUserId = null;
 let tempUser = { name: "", avatar: "" };
 let isCreatingNewUser = false; 
+
+// Initial empty checklists
+let checklists = [];
 
 let displayedMonth = new Date().getMonth();
 let displayedYear = new Date().getFullYear();
 let currentDateAPI = new Date();
 
-let checklists = [
-    { id: 1, userId: 1, title: 'Jogging', date: '2025-04-09', time: '06:00', icon: 'directions_run', colorClass: 'bg-purple', items: ['Water', 'Towel'] },
-    { id: 2, userId: 1, title: 'Swimming', date: '2025-04-11', time: '07:00', icon: 'pool', colorClass: 'bg-orange', items: ['Goggles'] }
-];
-
 let tempNewListItems = [];
 let currentEditingListId = null;
 let isEditMode = false;
+
+// New List Category Selection State
+let selectedCategory = { icon: 'checklist', color: 'bg-blue' }; // Default
 
 const avatars = [
     "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix",
@@ -439,6 +452,16 @@ const avatars = [
     "https://api.dicebear.com/7.x/avataaars/svg?seed=Bella",
     "https://api.dicebear.com/7.x/avataaars/svg?seed=Zoe",
     "https://api.dicebear.com/7.x/avataaars/svg?seed=Granny"
+];
+
+const categoryOptions = [
+    { icon: 'directions_run', color: 'bg-purple' },
+    { icon: 'pool', color: 'bg-orange' },
+    { icon: 'work', color: 'bg-blue' },
+    { icon: 'flight', color: 'bg-green' },
+    { icon: 'shopping_cart', color: 'bg-gray' },
+    { icon: 'hiking', color: 'bg-teal' },
+    { icon: 'fitness_center', color: 'bg-red' }
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -450,10 +473,17 @@ document.addEventListener('DOMContentLoaded', () => {
         splash.style.opacity = '0';
         setTimeout(() => {
             splash.style.display = 'none';
-            navigateTo('home-screen'); 
+            // Logic: No users -> Add User Screen. Users exist -> Home Screen.
+            if (users.length === 0) {
+                startAddUserFlow(); // Force setup
+            } else {
+                navigateTo('home-screen');
+            }
         }, 500);
     }, 2000);
 
+    // Initial render setup
+    renderCategoryGrid(); // For the list creation screen
     updateProfileDisplay();
     renderApp();
     setupTrashDragDrop();
@@ -463,14 +493,13 @@ document.addEventListener('DOMContentLoaded', () => {
 // --- HELPER: FORMAT TIME 12H ---
 function formatTime(timeStr) {
     if (!timeStr || timeStr === 'All Day') return 'All Day';
-    // If it looks like 24h format (e.g. 14:30)
     if(timeStr.includes(':')) {
         const [h, m] = timeStr.split(':');
         if(m === undefined) return timeStr; 
         let hour = parseInt(h);
         const ampm = hour >= 12 ? 'PM' : 'AM';
         hour = hour % 12;
-        hour = hour ? hour : 12; // the hour '0' should be '12'
+        hour = hour ? hour : 12; 
         return `${hour}:${m} ${ampm}`;
     }
     return timeStr;
@@ -513,7 +542,17 @@ function startAddUserFlow() {
     isCreatingNewUser = true;
     resetUserForm();
     document.getElementById('user-screen-title').innerText = "Add New User";
-    document.getElementById('user-back-btn').onclick = () => navigateTo('profile-screen');
+    
+    // If no users exist, they CANNOT cancel or go back.
+    if(users.length === 0) {
+        document.getElementById('user-back-btn').style.display = 'none';
+        document.querySelector('#add-user-screen .btn-secondary').style.display = 'none';
+    } else {
+        document.getElementById('user-back-btn').style.display = 'block';
+        document.getElementById('user-back-btn').onclick = () => navigateTo('profile-screen');
+        document.querySelector('#add-user-screen .btn-secondary').style.display = 'block';
+    }
+    
     navigateTo('add-user-screen');
 }
 
@@ -526,7 +565,9 @@ function startEditUserFlow() {
     document.getElementById('setup-main-avatar').src = tempUser.avatar;
     renderAvatarGrid();
     document.getElementById('user-screen-title').innerText = "Edit Profile";
+    document.getElementById('user-back-btn').style.display = 'block';
     document.getElementById('user-back-btn').onclick = () => navigateTo('profile-screen');
+    document.querySelector('#add-user-screen .btn-secondary').style.display = 'block';
     navigateTo('add-user-screen');
 }
 
@@ -553,13 +594,13 @@ function resetUserForm() {
 }
 function cancelUserAction() {
     if(users.length > 0) navigateTo('home-screen');
-    else alert("Please create a user.");
 }
 
 function saveUser() {
     const nameVal = document.getElementById('username-input').value.trim();
     if(!nameVal) { alert("Please enter a name"); return; }
     tempUser.name = nameVal;
+    
     if (isCreatingNewUser) {
         const newId = Date.now();
         users.push({ id: newId, name: tempUser.name, avatar: tempUser.avatar });
@@ -575,7 +616,12 @@ function saveUser() {
 
 function updateProfileDisplay() {
     const currentUser = users.find(u => u.id === activeUserId);
-    if(!currentUser) return;
+    if(!currentUser) {
+        // If no user (initial state), clear profile details
+        document.getElementById('home-avatar-img').src = '';
+        return;
+    }
+    
     document.getElementById('home-avatar-img').src = currentUser.avatar;
     document.getElementById('profile-main-avatar').src = currentUser.avatar;
     document.getElementById('profile-display-name').innerText = currentUser.name;
@@ -640,7 +686,7 @@ function renderCalendar() {
     const firstDayIndex = new Date(displayedYear, displayedMonth, 1).getDay();
     const daysInMonth = new Date(displayedYear, displayedMonth + 1, 0).getDate();
 
-    const userLists = checklists.filter(c => c.userId === activeUserId);
+    const userLists = activeUserId ? checklists.filter(c => c.userId === activeUserId) : [];
 
     for(let i=0; i<firstDayIndex; i++) grid.appendChild(Object.assign(document.createElement('div'), {className: 'day empty'}));
 
@@ -661,17 +707,17 @@ function renderApp() {
     const listsContainer = document.getElementById('all-lists-container');
     homeContainer.innerHTML = ''; listsContainer.innerHTML = '';
 
+    if (!activeUserId) return; // No user active
+
     const userLists = checklists.filter(c => c.userId === activeUserId);
 
     userLists.forEach(item => {
-        // Render Home Card (Use formatTime)
         const card = document.createElement('div');
         card.className = 'reminder-card';
         card.onclick = () => openChecklist(item);
         card.innerHTML = `<div class="icon-box ${item.colorClass}"><span class="material-icons-round">${item.icon}</span></div><span class="rem-title">${item.title}</span><span class="rem-date">${formatDate(item.date)}</span><span class="rem-time">${formatTime(item.time)}</span>`;
         homeContainer.appendChild(card);
         
-        // Render List Item (Use formatTime)
         const li = document.createElement('div');
         li.className = 'list-item';
         li.draggable = true;
@@ -758,6 +804,26 @@ function addChecklistItemInEdit() {
         if(index > -1) { checklists[index].items.push(val); updateChecklistUI(checklists[index]); document.getElementById('add-cl-item-input').value=''; }
     }
 }
+
+// --- CREATION UTILS ---
+function renderCategoryGrid() {
+    const container = document.getElementById('list-category-grid');
+    container.innerHTML = '';
+    categoryOptions.forEach(opt => {
+        const div = document.createElement('div');
+        // Default select 'checklist' icon if nothing selected, but we start with selection
+        div.className = `category-option ${opt.color} ${selectedCategory.icon === opt.icon ? 'selected' : ''}`;
+        div.innerHTML = `<span class="material-icons-round">${opt.icon}</span>`;
+        div.onclick = () => {
+            selectedCategory = opt;
+            // Update UI selection
+            document.querySelectorAll('#list-category-grid .category-option').forEach(el => el.classList.remove('selected'));
+            div.classList.add('selected');
+        };
+        container.appendChild(div);
+    });
+}
+
 function addTempItem() {
     const val = document.getElementById('new-item-input').value.trim();
     if(val) { tempNewListItems.push(val); renderTempItems(); document.getElementById('new-item-input').value = ''; }
@@ -766,17 +832,21 @@ function renderTempItems() {
     document.getElementById('temp-items-list').innerHTML = tempNewListItems.map((t, i) => `<div class="temp-tag">${t} <span style="color:red;cursor:pointer;margin-left:5px" onclick="removeTempItem(${i})">×</span></div>`).join('');
 }
 function removeTempItem(i) { tempNewListItems.splice(i, 1); renderTempItems(); }
+
 function createNewList() {
     const title = document.getElementById('new-list-title').value;
     const date = document.getElementById('new-list-date').value;
     const time = document.getElementById('new-list-time').value;
     if(!title || !date) { alert("Title and Date required"); return; }
     
+    // Create List with Active User ID and SELECTED CATEGORY
     checklists.push({ 
         id: Date.now(), 
         userId: activeUserId, 
         title, date, time: time || 'All Day', 
-        icon: 'checklist', colorClass: 'bg-blue', items: [...tempNewListItems] 
+        icon: selectedCategory.icon, 
+        colorClass: selectedCategory.color, 
+        items: [...tempNewListItems] 
     });
     
     tempNewListItems = []; renderTempItems(); 
