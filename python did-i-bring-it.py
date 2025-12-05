@@ -1,12 +1,9 @@
 import streamlit as st
 import streamlit.components.v1 as components
 
-# ==========================================
-# 1. CONFIGURE STREAMLIT PAGE
-# ==========================================
 st.set_page_config(
     page_title="Did I Bring It?",
-    page_icon="☑️", # Streamlit emoji fallback
+    page_icon="☑️",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -16,19 +13,11 @@ hide_st_style = """
             #MainMenu {visibility: hidden;}
             footer {visibility: hidden;}
             header {visibility: hidden;}
-            .block-container {
-                padding-top: 0rem;
-                padding-bottom: 0rem;
-                padding-left: 0rem;
-                padding-right: 0rem;
-            }
+            .block-container { padding: 0; }
             </style>
             """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-# ==========================================
-# 2. APP CONTENT (HTML/CSS/JS)
-# ==========================================
 html_code = """
 <!DOCTYPE html>
 <html lang="en">
@@ -37,9 +26,7 @@ html_code = """
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Did I Bring It?</title>
     
-    <!-- MODERN APP ICON FAVICON -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%232A4298;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%236A82FB;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='0' y='0' width='32' height='32' rx='10' ry='10' fill='url(%23grad)'/%3E%3Cpath d='M9 16 L13.5 20.5 L23 11' stroke='white' stroke-width='3.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     
@@ -66,9 +53,9 @@ html_code = """
             align-items: center;
             overflow: hidden;
             margin: 0;
+            user-select: none; /* Prevent text selection during drag */
         }
 
-        /* --- RESPONSIVE MOBILE VIEWPORT --- */
         #mobile-viewport {
             width: 100%;
             height: 100%;
@@ -83,69 +70,26 @@ html_code = """
             border-radius: 20px;
         }
         @media (max-width: 480px) {
-            #mobile-viewport { 
-                max-width: 100%; 
-                max-height: 100%; 
-                border-radius: 0; 
-                box-shadow: none;
-            }
+            #mobile-viewport { max-width: 100%; max-height: 100%; border-radius: 0; box-shadow: none; }
         }
 
-        /* --- SCREEN LAYOUT --- */
-        .screen {
-            display: none; 
-            flex-direction: column;
-            width: 100%; 
-            height: 100%;
-            background-color: var(--bg-color);
-            animation: fadeIn 0.3s ease-in-out;
-        }
+        /* LAYOUT */
+        .screen { display: none; flex-direction: column; width: 100%; height: 100%; background-color: var(--bg-color); animation: fadeIn 0.3s ease-in-out; }
         .screen.active { display: flex; }
-
-        .scrollable-content {
-            flex-grow: 1;
-            overflow-y: auto;
-            width: 100%;
-            padding: 0 20px 20px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+        .scrollable-content { flex-grow: 1; overflow-y: auto; width: 100%; padding: 0 20px 20px 20px; display: flex; flex-direction: column; align-items: center; }
         .scrollable-content::-webkit-scrollbar { display: none; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* HEADER */
-        .app-bar { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 20px; 
-            flex-shrink: 0; 
-            background: transparent;
-            z-index: 10;
-            min-height: 70px;
-        }
+        .app-bar { display: flex; justify-content: space-between; align-items: center; padding: 20px; flex-shrink: 0; background: transparent; z-index: 10; min-height: 70px; }
         .app-bar h2 { font-size: 1.25rem; font-weight: 600; color: #000; letter-spacing: 0.5px; }
         .icon-btn { background: none; border: none; font-size: 1rem; display: flex; align-items: center; cursor: pointer; color: var(--text-dark); }
 
-        .content-center { display: flex; flex-direction: column; align-items: center; width: 100%; }
-        .input-group { width: 100%; display: flex; justify-content: center; }
-
         /* COMPONENTS */
-        .calendar-card { 
-            background: #fff; 
-            width: 100%;
-            border-radius: 25px; 
-            padding: 20px; 
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05); 
-            margin-bottom: 20px;
-            margin-top: 10px;
-            flex-shrink: 0;
-        }
+        .content-center { display: flex; flex-direction: column; align-items: center; width: 100%; }
+        
+        .calendar-card { background: #fff; width: 100%; border-radius: 25px; padding: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); margin-bottom: 20px; margin-top: 10px; flex-shrink: 0; }
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .calendar-days, .calendar-grid-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; margin-bottom: 15px; }
         .day { font-size: 1rem; display: flex; justify-content: center; align-items: center; border-radius: 50%; aspect-ratio: 1 / 1; width: 100%; cursor: pointer; }
@@ -157,42 +101,41 @@ html_code = """
         .chip-gray { background: #eee; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 500; }
 
         .reminders-section { width: 100%; margin-bottom: 20px; }
-        .reminders-section h4 { margin: 0 0 15px 5px; font-size: 1.1rem; font-weight: 600; text-align: left; }
-        
-        .reminder-card { 
-            background: rgba(255, 255, 255, 0.7); border: 2px solid #fff; border-radius: 25px; 
-            padding: 10px 15px; display: flex; align-items: center; margin-bottom: 12px; height: 70px; 
-            cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.02); width: 100%;
-        }
+        .reminder-card { background: rgba(255, 255, 255, 0.7); border: 2px solid #fff; border-radius: 25px; padding: 10px 15px; display: flex; align-items: center; margin-bottom: 12px; height: 70px; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.02); width: 100%; }
         .rem-title { font-weight: 600; margin-right: auto; margin-left: 10px; color: var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .rem-date, .rem-time { background: #CFD8DC; padding: 5px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 500; margin-left: 5px; white-space: nowrap; flex-shrink: 0;}
 
+        /* ICONS & CATEGORIES */
         .icon-box { width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
         .icon-box span { color: white; font-size: 24px; }
         
-        /* CATEGORY COLORS */
-        .bg-purple { background: #D1C4E9; } .bg-purple span { color: #5E35B1; }
-        .bg-orange { background: #FFE0B2; } .bg-orange span { color: #FB8C00; }
-        .bg-green { background: #C8E6C9; } .bg-green span { color: #43A047; }
-        .bg-blue { background: #BBDEFB; } .bg-blue span { color: #1976D2; }
-        .bg-gray { background: #90A4AE; } .bg-gray span { color: #37474F; }
-        .bg-red { background: #ffcdd2; } .bg-red span { color: #c62828; }
-        .bg-teal { background: #b2dfdb; } .bg-teal span { color: #00695c; }
+        /* CATEGORY COLORS (Fixed Specificity) */
+        div.category-option.bg-purple { background-color: #D1C4E9 !important; } 
+        div.category-option.bg-orange { background-color: #FFE0B2 !important; }
+        div.category-option.bg-green { background-color: #C8E6C9 !important; }
+        div.category-option.bg-blue { background-color: #BBDEFB !important; }
+        div.category-option.bg-gray { background-color: #90A4AE !important; }
+        div.category-option.bg-red { background-color: #ffcdd2 !important; }
+        div.category-option.bg-teal { background-color: #b2dfdb !important; }
+        
+        /* Reminder Card Colors */
+        .icon-box.bg-purple { background-color: #D1C4E9; } .icon-box.bg-purple span { color: #5E35B1; }
+        .icon-box.bg-orange { background-color: #FFE0B2; } .icon-box.bg-orange span { color: #FB8C00; }
+        .icon-box.bg-green { background-color: #C8E6C9; } .icon-box.bg-green span { color: #43A047; }
+        .icon-box.bg-blue { background-color: #BBDEFB; } .icon-box.bg-blue span { color: #1976D2; }
+        .icon-box.bg-gray { background-color: #90A4AE; } .icon-box.bg-gray span { color: #37474F; }
+        .icon-box.bg-red { background-color: #ffcdd2; } .icon-box.bg-red span { color: #c62828; }
+        .icon-box.bg-teal { background-color: #b2dfdb; } .icon-box.bg-teal span { color: #00695c; }
 
         .list-container { width: 100%; display: flex; flex-direction: column; }
         .list-item { background: #D4F1F4; border: 1px solid #7F8C8D; border-radius: 20px; padding: 15px; display: flex; align-items: center; margin-bottom: 15px; cursor: pointer; width: 100%; }
         .list-text { font-weight: 600; flex-grow: 1; margin-left: 15px; }
         
-        .trash-container { 
-            display: flex; justify-content: center; align-items: center;
-            padding: 20px; transition: transform 0.2s; margin-bottom: 10px; margin-top: auto; flex-shrink: 0;
-        }
-        .trash-container.trash-hover { transform: scale(1.3); }
+        .trash-container { display: flex; justify-content: center; align-items: center; padding: 20px; margin-bottom: 10px; margin-top: auto; flex-shrink: 0; z-index: 20; }
+        .trash-container.trash-hover .trash-icon { color: #ff5252; transform: scale(1.3); transition: 0.2s; }
         .trash-icon { font-size: 35px; color: #aaa; transition: color 0.3s; }
-        .trash-container.trash-hover .trash-icon { color: #ff5252; }
         .hint-text { text-align: center; color: #888; font-size: 0.8rem; margin-top: 10px; flex-shrink: 0; width: 100%; display: block; }
 
-        /* FORMS & AVATARS */
         .form-container { width: 100%; max-width: 340px; display: flex; flex-direction: column; gap: 15px; }
         .form-container label { font-size: 0.95rem; font-weight: 500; color: #444; display: block; margin-bottom: 5px; margin-top: 5px; text-align: left; width: 100%; }
         .input-field { width: 100%; padding: 12px 15px; border-radius: 12px; border: 1px solid #ccc; background: #fff; font-size: 1rem; outline: none; font-family: var(--font-poppins); }
@@ -200,21 +143,14 @@ html_code = """
 
         .category-label { font-size: 0.9rem; font-weight: 500; color: #666; margin-bottom: 5px; align-self: flex-start; margin-left: 5px; }
         .category-grid { display: flex; gap: 12px; overflow-x: auto; padding: 10px 5px; width: 100%; margin-bottom: 10px; scrollbar-width: none; }
-        .category-grid::-webkit-scrollbar { display: none; }
-        .category-option { width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; flex-shrink: 0; border: 2px solid transparent; transition: transform 0.2s, box-shadow 0.2s; }
-        .category-option.selected { border-color: #2A4298; transform: scale(1.1); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .category-option { width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; flex-shrink: 0; border: 3px solid transparent; transition: transform 0.2s; }
+        .category-option.selected { border-color: #2A4298; transform: scale(1.1); box-shadow: 0 4px 8px rgba(0,0,0,0.2); border-width: 3px; }
         .category-option span { color: white; font-size: 26px; }
-
-        .button-row { display: flex; gap: 20px; justify-content: center; width: 100%; margin-top: 30px; margin-bottom: 30px; flex-shrink: 0; }
-        .btn-primary { background-color: var(--button-blue); padding: 12px 30px; border-radius: 12px; border: none; cursor: pointer; font-weight: 600; font-size: 1rem; width: 130px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .btn-secondary { background-color: #fff; padding: 12px 30px; border-radius: 12px; border: none; cursor: pointer; font-weight: 500; font-size: 1rem; width: 130px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .btn-icon-small { background: var(--primary-blue); color: white; border: none; border-radius: 8px; width: 50px; cursor: pointer; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
-        .btn-text-danger { margin-top: 10px; color: var(--danger-color); background: none; border: none; font-weight: 600; cursor: pointer; font-size: 0.9rem; }
-        .btn-done-pill { margin-top: 30px; background: #D1C4E9; width: 150px; padding: 15px; border: none; border-radius: 30px; font-size: 1.1rem; font-weight: 600; display: block; margin-left: auto; margin-right: auto; cursor: pointer; }
 
         .switch-accounts-section { width: 100%; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 20px; margin-top: 10px; text-align: center; }
         .users-row { display: flex; justify-content: center; gap: 15px; margin-top: 10px; flex-wrap: wrap; }
-        .small-user-avatar { width: 50px; height: 50px; border-radius: 50%; overflow: hidden; cursor: grab; border: 2px solid transparent; }
+        
+        .small-user-avatar { width: 50px; height: 50px; border-radius: 50%; overflow: hidden; cursor: grab; border: 2px solid transparent; touch-action: none; /* Crucial for touch drag */ }
         .small-user-avatar.active-user { border-color: var(--primary-blue); box-shadow: 0 0 10px rgba(42, 66, 152, 0.3); }
         .small-user-avatar img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
 
@@ -229,20 +165,53 @@ html_code = """
         .profile-icon-mini { width: 45px !important; height: 45px !important; border-radius: 50%; background: #87CEEB; overflow: hidden; cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-shrink: 0; }
         .profile-icon-mini img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
+        /* CHECKLIST UI FIX */
         .checklist-content { padding: 20px 40px; width: 100%; }
         .big-title { font-size: 2.5rem; font-weight: 600; margin-bottom: 10px; }
         .tags-row { display: flex; gap: 10px; margin-bottom: 40px; }
         .tag { background: #CFD8DC; padding: 5px 15px; border-radius: 15px; font-size: 0.9rem; font-weight: 500; }
-        .checkbox-container { display: flex; align-items: center; position: relative; padding-left: 40px; cursor: pointer; font-size: 1.2rem; font-weight: 500; margin-bottom: 20px; width: 100%; }
+        
+        .checkbox-container { 
+            display: flex; 
+            align-items: center; 
+            position: relative; 
+            padding: 10px; /* Padding inside */
+            padding-left: 45px; /* Space for checkbox */
+            cursor: pointer; 
+            font-size: 1.1rem; 
+            font-weight: 500; 
+            margin-bottom: 10px; /* Spacing between items */
+            width: 100%; 
+            background: rgba(255,255,255,0.7); /* Background for item */
+            border-radius: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        
         .checkbox-container input { position: absolute; opacity: 0; }
-        .checkmark-box { position: absolute; left: 0; height: 26px; width: 26px; border: 2px solid var(--text-dark); border-radius: 6px; }
+        .checkmark-box { position: absolute; left: 15px; height: 24px; width: 24px; border: 2px solid var(--text-dark); border-radius: 6px; background: white; }
         .checkbox-container input:checked ~ .checkmark-box { background-color: var(--primary-blue); border-color: var(--primary-blue); }
         .checkbox-container input:checked ~ .checkmark-box:after { display: block; }
-        .checkmark-box:after { content: ""; position: absolute; display: none; left: 8px; top: 4px; width: 6px; height: 12px; border: solid white; border-width: 0 3px 3px 0; transform: rotate(45deg); }
-        .delete-item-icon { color: var(--danger-color); font-size: 1.5rem; cursor: pointer; }
+        .checkmark-box:after { content: ""; position: absolute; display: none; left: 7px; top: 3px; width: 6px; height: 12px; border: solid white; border-width: 0 3px 3px 0; transform: rotate(45deg); }
+        
+        .delete-item-icon { 
+            color: var(--danger-color); 
+            font-size: 1.5rem; 
+            cursor: pointer; 
+            margin-left: auto; /* Push to right */
+            padding: 5px;
+        }
+        .text { flex-grow: 1; word-break: break-word; }
+
         .add-item-row { display: flex; gap: 10px; width: 100%; }
         .temp-tag { background: #fff; padding: 5px 10px; border-radius: 15px; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; border: 1px solid #ccc; margin-right: 5px; margin-bottom: 5px; }
         .temp-tags-container { display: flex; flex-wrap: wrap; margin-top: 10px; width: 100%; }
+
+        .btn-done-pill { margin-top: 30px; background: #D1C4E9; width: 150px; padding: 15px; border: none; border-radius: 30px; font-size: 1.1rem; font-weight: 600; display: block; margin-left: auto; margin-right: auto; cursor: pointer; }
+        .button-row { display: flex; gap: 20px; justify-content: center; width: 100%; margin-top: 30px; margin-bottom: 30px; flex-shrink: 0; }
+        .btn-primary { background-color: var(--button-blue); padding: 12px 30px; border-radius: 12px; border: none; cursor: pointer; font-weight: 600; font-size: 1rem; width: 130px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .btn-secondary { background-color: #fff; padding: 12px 30px; border-radius: 12px; border: none; cursor: pointer; font-weight: 500; font-size: 1rem; width: 130px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .btn-icon-small { background: var(--primary-blue); color: white; border: none; border-radius: 8px; width: 50px; cursor: pointer; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
+        .btn-text-danger { margin-top: 10px; color: var(--danger-color); background: none; border: none; font-weight: 600; cursor: pointer; font-size: 0.9rem; }
 
         #splash-screen { background-color: #2A4298; z-index: 9999; display: flex; align-items: center; justify-content: center; position: absolute; top:0; left:0; width: 100%; height: 100%; }
         .union-logo { width: 100px; height: 100px; border: 2px solid #879BF0; border-radius: 50% 0 50% 0; display: flex; justify-content: center; align-items: center; margin-bottom: 20px; transform: rotate(-45deg); box-shadow: 0 0 20px rgba(135, 155, 240, 0.5); }
@@ -255,37 +224,25 @@ html_code = """
 
 <div id="mobile-viewport">
 
-    <!-- SCREEN 1: SPLASH SCREEN -->
+    <!-- SPLASH -->
     <div id="splash-screen" class="screen active">
         <div class="logo-container">
-            <div class="union-logo">
-                <span class="material-icons-round checkmark">check</span>
-            </div>
+            <div class="union-logo"><span class="material-icons-round checkmark">check</span></div>
             <h1>DID I BRING IT?</h1>
         </div>
     </div>
 
-    <!-- SCREEN 2: ADD / EDIT USER SCREEN -->
+    <!-- ADD/EDIT USER -->
     <div id="add-user-screen" class="screen">
         <div class="app-bar">
             <button class="icon-btn" id="user-back-btn" onclick="navigateTo('home-screen')"><span class="material-icons-round">arrow_back_ios</span></button>
             <h2 id="user-screen-title" style="flex-grow:1; text-align:center; margin-right: 24px;">Add New User</h2>
         </div>
-        
         <div class="scrollable-content">
             <div class="content-center">
-                <div class="avatar-large-wrapper">
-                    <div class="avatar-large">
-                        <img id="setup-main-avatar" src="" alt="Avatar">
-                    </div>
-                </div>
-                
-                <div class="input-group">
-                    <input type="text" id="username-input" placeholder="Enter Name" class="underline-input">
-                </div>
-
+                <div class="avatar-large-wrapper"><div class="avatar-large"><img id="setup-main-avatar" src="" alt="Avatar"></div></div>
+                <div class="input-group"><input type="text" id="username-input" placeholder="Enter Name" class="underline-input"></div>
                 <div class="avatar-grid" id="setup-avatar-grid"></div>
-                
                 <div class="button-row">
                     <button class="btn-primary" onclick="saveUser()">Done</button>
                     <button class="btn-secondary" onclick="cancelUserAction()">Cancel</button>
@@ -294,49 +251,39 @@ html_code = """
         </div>
     </div>
 
-    <!-- SCREEN 3: PROFILE SCREEN -->
+    <!-- PROFILE -->
     <div id="profile-screen" class="screen">
         <div class="app-bar">
             <button class="icon-btn" onclick="navigateTo('home-screen')"><span class="material-icons-round">arrow_back_ios</span></button>
             <h2>Profile</h2>
             <button class="icon-btn" onclick="startAddUserFlow()"><span class="material-icons-round">person_add</span></button>
         </div>
-        
         <div class="scrollable-content">
             <div class="content-center">
-                <div class="avatar-large-circle">
-                    <img id="profile-main-avatar" src="" alt="User">
-                </div>
-                
+                <div class="avatar-large-circle"><img id="profile-main-avatar" src="" alt="User"></div>
                 <h2 id="profile-display-name">User</h2>
-
                 <div class="switch-accounts-section">
                     <p>Switch Accounts:</p>
                     <div id="other-users-list" class="users-row"></div>
                 </div>
-
                 <div class="button-row" style="margin-top: 30px;">
                     <button class="btn-primary" onclick="startEditUserFlow()">Edit Profile</button>
                     <button class="btn-secondary" onclick="navigateTo('home-screen')">Back</button>
                 </div>
             </div>
         </div>
-
         <p class="hint-text">Drag avatar here to delete user</p>
         <div class="trash-container" id="profile-trash-target">
             <span class="material-icons-round trash-icon">delete_outline</span>
         </div>
     </div>
 
-    <!-- SCREEN 4: HOME SCREEN -->
+    <!-- HOME -->
     <div id="home-screen" class="screen">
         <div class="app-bar home-header">
             <button class="icon-btn" onclick="navigateTo('lists-screen')"><span class="material-icons-round" style="font-size: 36px;">menu</span></button>
-            <div class="profile-icon-mini" onclick="navigateTo('profile-screen')">
-                <img id="home-avatar-img" src="" alt="User">
-            </div>
+            <div class="profile-icon-mini" onclick="navigateTo('profile-screen')"><img id="home-avatar-img" src="" alt="User"></div>
         </div>
-
         <div class="scrollable-content">
             <div class="calendar-card">
                 <div class="calendar-header">
@@ -350,13 +297,11 @@ html_code = """
                     <div class="day-name">SUN</div><div class="day-name">MON</div><div class="day-name">TUE</div><div class="day-name">WED</div><div class="day-name">THU</div><div class="day-name">FRI</div><div class="day-name">SAT</div>
                 </div>
                 <div class="calendar-days" id="calendar-days-grid"></div>
-
                 <div class="time-row">
                     <span style="font-weight: 500; color: #555;">Time</span>
                     <span class="chip-gray" id="current-time-display">--:--</span>
                 </div>
             </div>
-
             <div class="reminders-section">
                 <h4>Reminders:</h4>
                 <div id="home-reminders-list"></div>
@@ -364,41 +309,34 @@ html_code = """
         </div>
     </div>
 
-    <!-- SCREEN 5: LISTS VIEW -->
+    <!-- LISTS -->
     <div id="lists-screen" class="screen">
         <div class="app-bar">
             <button class="icon-btn" onclick="navigateTo('home-screen')"><span class="material-icons-round">arrow_back_ios</span> Home</button>
             <h2 style="flex-grow: 1; text-align: center; margin-right: 60px;">Lists</h2>
             <button class="icon-btn" onclick="navigateTo('add-list-screen')"><span class="material-icons-round" style="font-size: 28px;">add</span></button>
         </div>
-
         <div class="scrollable-content" style="padding: 0;">
             <div class="list-container" id="all-lists-container" style="padding: 20px;"></div>
         </div>
-
         <p class="hint-text">Drag a list to the trash to delete</p>
         <div class="trash-container" id="trash-target">
             <span class="material-icons-round trash-icon">delete_outline</span>
         </div>
     </div>
 
-    <!-- SCREEN 6: CHECKLIST DETAILS -->
+    <!-- CHECKLIST -->
     <div id="checklist-screen" class="screen">
         <div class="app-bar">
             <button class="icon-btn" onclick="navigateTo('lists-screen')"><span class="material-icons-round">arrow_back_ios</span></button>
             <h2>Checklist</h2>
             <button class="icon-btn" onclick="toggleEditChecklistMode()"><span class="material-icons-round" id="cl-edit-icon">edit</span></button>
         </div>
-        
         <div class="scrollable-content">
             <div id="cl-view-header">
                 <h1 class="big-title" id="cl-title">Title</h1>
-                <div class="tags-row">
-                    <span class="tag" id="cl-date">Date</span>
-                    <span class="tag" id="cl-time">Time</span>
-                </div>
+                <div class="tags-row"><span class="tag" id="cl-date">Date</span><span class="tag" id="cl-time">Time</span></div>
             </div>
-
             <div id="cl-edit-header" style="display: none; margin-bottom: 20px;">
                 <input type="text" id="edit-cl-title" class="input-field" placeholder="Title">
                 <div style="display: flex; gap: 10px;">
@@ -410,44 +348,37 @@ html_code = """
                     <button class="btn-icon-small" onclick="addChecklistItemInEdit()"><span class="material-icons-round">add</span></button>
                 </div>
             </div>
-
             <div class="check-group" id="cl-items-container"></div>
-            
             <div class="button-row">
                 <button id="cl-action-btn" class="btn-done-pill" onclick="navigateTo('home-screen')">Done</button>
             </div>
         </div>
     </div>
 
-    <!-- SCREEN 7: ADD NEW LIST FORM -->
+    <!-- NEW LIST -->
     <div id="add-list-screen" class="screen">
         <div class="app-bar">
             <button class="icon-btn" onclick="navigateTo('lists-screen')"><span class="material-icons-round">arrow_back_ios</span> Cancel</button>
             <h2>New List</h2>
             <div style="width: 24px;"></div>
         </div>
-
         <div class="scrollable-content">
             <div class="form-container">
                 <label>List Title</label>
                 <input type="text" id="new-list-title" class="input-field" placeholder="e.g. Gym, Work">
-                
                 <label>Choose Icon</label>
                 <div id="list-category-grid" class="category-grid"></div>
-
                 <label>Date & Time</label>
                 <div style="display: flex; gap: 10px;">
                     <input type="date" id="new-list-date" class="input-field">
                     <input type="time" id="new-list-time" class="input-field">
                 </div>
-
                 <label>Checklist Items</label>
                 <div class="add-item-row">
                     <input type="text" id="new-item-input" class="input-field" placeholder="Add item">
                     <button class="btn-icon-small" onclick="addTempItem()"><span class="material-icons-round">add</span></button>
                 </div>
                 <div id="temp-items-list" class="temp-tags-container"></div>
-                
                 <div class="button-row">
                     <button class="btn-primary" onclick="createNewList()">Create</button>
                 </div>
@@ -458,7 +389,7 @@ html_code = """
 </div>
 
 <script>
-// --- DATA INIT ---
+// --- LOGIC ---
 let users = [];
 let activeUserId = null;
 let tempUser = { name: "", avatar: "" };
@@ -497,27 +428,82 @@ const categoryOptions = [
 document.addEventListener('DOMContentLoaded', () => {
     fetchDateFromAPI();
     setInterval(updateHomeClock, 1000);
-
     const splash = document.getElementById('splash-screen');
     setTimeout(() => {
         splash.style.opacity = '0';
         setTimeout(() => {
             splash.style.display = 'none';
-            if (users.length === 0) {
-                startAddUserFlow(); 
-            } else {
-                navigateTo('home-screen');
-            }
+            if (users.length === 0) startAddUserFlow(); else navigateTo('home-screen');
         }, 500);
     }, 2000);
-
     renderCategoryGrid();
     updateProfileDisplay();
     renderApp();
     setupTrashDragDrop();
-    setupProfileTrashDragDrop();
 });
 
+// TOUCH DND LOGIC FOR MOBILE
+let draggedItem = null;
+let touchGhost = null;
+
+function handleTouchStart(e) {
+    const target = e.currentTarget;
+    const id = target.dataset.userId;
+    if(!id) return;
+    draggedItem = id;
+    
+    // Create ghost
+    touchGhost = target.cloneNode(true);
+    touchGhost.style.position = 'fixed';
+    touchGhost.style.opacity = '0.7';
+    touchGhost.style.pointerEvents = 'none';
+    touchGhost.style.zIndex = '9999';
+    touchGhost.style.width = '60px'; // Slightly larger
+    touchGhost.style.height = '60px';
+    // Initial position
+    const touch = e.touches[0];
+    touchGhost.style.left = (touch.clientX - 30) + 'px';
+    touchGhost.style.top = (touch.clientY - 30) + 'px';
+    document.body.appendChild(touchGhost);
+}
+
+function handleTouchMove(e) {
+    if(!touchGhost) return;
+    e.preventDefault(); // Prevent scroll
+    const touch = e.touches[0];
+    touchGhost.style.left = (touch.clientX - 30) + 'px';
+    touchGhost.style.top = (touch.clientY - 30) + 'px';
+    
+    // Check overlap with trash
+    const trash = document.getElementById('profile-trash-target');
+    const trashRect = trash.getBoundingClientRect();
+    if (touch.clientX >= trashRect.left && touch.clientX <= trashRect.right && 
+        touch.clientY >= trashRect.top && touch.clientY <= trashRect.bottom) {
+        trash.classList.add('trash-hover');
+    } else {
+        trash.classList.remove('trash-hover');
+    }
+}
+
+function handleTouchEnd(e) {
+    if(!draggedItem || !touchGhost) return;
+    
+    const trash = document.getElementById('profile-trash-target');
+    const trashRect = trash.getBoundingClientRect();
+    const touch = e.changedTouches[0];
+    
+    if (touch.clientX >= trashRect.left && touch.clientX <= trashRect.right && 
+        touch.clientY >= trashRect.top && touch.clientY <= trashRect.bottom) {
+        deleteUserById(parseInt(draggedItem));
+    }
+    
+    document.body.removeChild(touchGhost);
+    trash.classList.remove('trash-hover');
+    touchGhost = null;
+    draggedItem = null;
+}
+
+// ... EXISTING LOGIC ...
 function formatTime(timeStr) {
     if (!timeStr || timeStr === 'All Day') return 'All Day';
     if(timeStr.includes(':')) {
@@ -559,14 +545,13 @@ function navigateTo(screenId) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(screenId).classList.add('active');
     if(screenId === 'home-screen') { renderCalendar(); updateProfileDisplay(); renderApp(); }
-    if(screenId === 'profile-screen') updateProfileDisplay();
+    if(screenId === 'profile-screen') { updateProfileDisplay(); }
 }
 
 function startAddUserFlow() {
     isCreatingNewUser = true;
     resetUserForm();
     document.getElementById('user-screen-title').innerText = "Add New User";
-    
     if(users.length === 0) {
         document.getElementById('user-back-btn').style.display = 'none';
         document.querySelector('#add-user-screen .btn-secondary').style.display = 'none';
@@ -614,15 +599,12 @@ function resetUserForm() {
     document.getElementById('setup-main-avatar').src = tempUser.avatar;
     renderAvatarGrid();
 }
-function cancelUserAction() {
-    if(users.length > 0) navigateTo('home-screen');
-}
+function cancelUserAction() { if(users.length > 0) navigateTo('home-screen'); }
 
 function saveUser() {
     const nameVal = document.getElementById('username-input').value.trim();
     if(!nameVal) { alert("Please enter a name"); return; }
     tempUser.name = nameVal;
-    
     if (isCreatingNewUser) {
         const newId = Date.now();
         users.push({ id: newId, name: tempUser.name, avatar: tempUser.avatar });
@@ -638,10 +620,7 @@ function saveUser() {
 
 function updateProfileDisplay() {
     const currentUser = users.find(u => u.id === activeUserId);
-    if(!currentUser) {
-        document.getElementById('home-avatar-img').src = '';
-        return;
-    }
+    if(!currentUser) { document.getElementById('home-avatar-img').src = ''; return; }
     document.getElementById('home-avatar-img').src = currentUser.avatar;
     document.getElementById('profile-main-avatar').src = currentUser.avatar;
     document.getElementById('profile-display-name').innerText = currentUser.name;
@@ -652,21 +631,29 @@ function updateProfileDisplay() {
         const div = document.createElement('div');
         div.className = `small-user-avatar ${u.id === activeUserId ? 'active-user' : ''}`;
         div.innerHTML = `<img src="${u.avatar}">`;
-        div.draggable = true;
+        div.draggable = true; 
+        div.dataset.userId = u.id; // Store ID for drag logic
+        
         div.onclick = () => {
             activeUserId = u.id;
             updateProfileDisplay();
             renderApp(); 
             navigateTo('home-screen');
         };
-        div.addEventListener('dragstart', (e) => {
-            e.dataTransfer.setData('text/user-id', u.id);
-        });
+        
+        // Desktop Drag
+        div.addEventListener('dragstart', (e) => { e.dataTransfer.setData('text/user-id', u.id); });
+        
+        // Mobile Touch Drag
+        div.addEventListener('touchstart', handleTouchStart, {passive: false});
+        div.addEventListener('touchmove', handleTouchMove, {passive: false});
+        div.addEventListener('touchend', handleTouchEnd);
+
         otherUsersContainer.appendChild(div);
     });
 }
 
-function setupProfileTrashDragDrop() {
+function setupTrashDragDrop() {
     const trash = document.getElementById('profile-trash-target');
     trash.addEventListener('dragover', (e) => { e.preventDefault(); trash.classList.add('trash-hover'); });
     trash.addEventListener('dragleave', () => trash.classList.remove('trash-hover'));
@@ -743,17 +730,6 @@ function renderApp() {
     });
 }
 
-function setupTrashDragDrop() {
-    const trash = document.getElementById('trash-target');
-    trash.addEventListener('dragover', (e) => { e.preventDefault(); trash.classList.add('trash-hover'); });
-    trash.addEventListener('dragleave', () => trash.classList.remove('trash-hover'));
-    trash.addEventListener('drop', (e) => {
-        e.preventDefault(); trash.classList.remove('trash-hover');
-        const id = e.dataTransfer.getData('text/list-id');
-        if(id) { checklists = checklists.filter(i => i.id != id); renderApp(); renderCalendar(); }
-    });
-}
-
 function openChecklist(item) {
     currentEditingListId = item.id;
     isEditMode = false;
@@ -781,7 +757,7 @@ function updateChecklistUI(item) {
         if(isEditMode) {
             const row = document.createElement('div');
             row.className = 'checkbox-container';
-            row.style.justifyContent = 'space-between';
+            row.style.cursor = 'default';
             row.innerHTML = `<span class="text" style="margin-left:0">${txt}</span><span class="material-icons-round delete-item-icon" onclick="deleteChecklistItem(${idx})">remove_circle</span>`;
             container.appendChild(row);
         } else {
@@ -872,10 +848,6 @@ function formatDate(isoStr) {
 </html>
 """
 
-# ==========================================
-# 3. RENDER THE COMPONENT
-# ==========================================
 c1, c2, c3 = st.columns([1, 2, 1])
-
 with c2:
     components.html(html_code, height=950, scrolling=True)
