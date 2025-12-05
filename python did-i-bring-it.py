@@ -352,6 +352,7 @@ html_code = """
                 <h1 class="big-title" id="cl-title">Title</h1>
                 <div class="tags-row">
                     <span class="tag" id="cl-date">Date</span>
+                    <!-- Time with AM/PM -->
                     <span class="tag" id="cl-time">Time</span>
                 </div>
             </div>
@@ -449,7 +450,6 @@ document.addEventListener('DOMContentLoaded', () => {
         splash.style.opacity = '0';
         setTimeout(() => {
             splash.style.display = 'none';
-            // CHANGED: Go directly to home-screen instead of add-user
             navigateTo('home-screen'); 
         }, 500);
     }, 2000);
@@ -459,6 +459,22 @@ document.addEventListener('DOMContentLoaded', () => {
     setupTrashDragDrop();
     setupProfileTrashDragDrop();
 });
+
+// --- HELPER: FORMAT TIME 12H ---
+function formatTime(timeStr) {
+    if (!timeStr || timeStr === 'All Day') return 'All Day';
+    // If it looks like 24h format (e.g. 14:30)
+    if(timeStr.includes(':')) {
+        const [h, m] = timeStr.split(':');
+        if(m === undefined) return timeStr; 
+        let hour = parseInt(h);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        hour = hour % 12;
+        hour = hour ? hour : 12; // the hour '0' should be '12'
+        return `${hour}:${m} ${ampm}`;
+    }
+    return timeStr;
+}
 
 // --- CLOCK ---
 async function fetchDateFromAPI() {
@@ -547,7 +563,6 @@ function saveUser() {
     if (isCreatingNewUser) {
         const newId = Date.now();
         users.push({ id: newId, name: tempUser.name, avatar: tempUser.avatar });
-        // Switch to new user immediately -> Empty Lists
         activeUserId = newId;
     } else {
         const userIndex = users.findIndex(u => u.id === activeUserId);
@@ -599,11 +614,8 @@ function setupProfileTrashDragDrop() {
 function deleteUserById(id) {
     if(users.length <= 1) { alert("Cannot delete the only user."); return; }
     if(confirm("Delete this user and their data?")) {
-        // Cascade Delete lists
         checklists = checklists.filter(item => item.userId !== id);
-        // Remove User
         users = users.filter(u => u.id !== id);
-        // Fallback user
         if(activeUserId === id) activeUserId = users[0].id;
         updateProfileDisplay();
         renderApp();
@@ -628,7 +640,6 @@ function renderCalendar() {
     const firstDayIndex = new Date(displayedYear, displayedMonth, 1).getDay();
     const daysInMonth = new Date(displayedYear, displayedMonth + 1, 0).getDate();
 
-    // Filter for active user
     const userLists = checklists.filter(c => c.userId === activeUserId);
 
     for(let i=0; i<firstDayIndex; i++) grid.appendChild(Object.assign(document.createElement('div'), {className: 'day empty'}));
@@ -653,19 +664,21 @@ function renderApp() {
     const userLists = checklists.filter(c => c.userId === activeUserId);
 
     userLists.forEach(item => {
+        // Render Home Card (Use formatTime)
         const card = document.createElement('div');
         card.className = 'reminder-card';
         card.onclick = () => openChecklist(item);
-        card.innerHTML = `<div class="icon-box ${item.colorClass}"><span class="material-icons-round">${item.icon}</span></div><span class="rem-title">${item.title}</span><span class="rem-date">${formatDate(item.date)}</span><span class="rem-time">${item.time}</span>`;
+        card.innerHTML = `<div class="icon-box ${item.colorClass}"><span class="material-icons-round">${item.icon}</span></div><span class="rem-title">${item.title}</span><span class="rem-date">${formatDate(item.date)}</span><span class="rem-time">${formatTime(item.time)}</span>`;
         homeContainer.appendChild(card);
         
+        // Render List Item (Use formatTime)
         const li = document.createElement('div');
         li.className = 'list-item';
         li.draggable = true;
         li.addEventListener('dragstart', (e) => { li.classList.add('dragging'); e.dataTransfer.setData('text/list-id', item.id); });
         li.addEventListener('dragend', () => li.classList.remove('dragging'));
         li.onclick = () => openChecklist(item);
-        li.innerHTML = `<div class="icon-box ${item.colorClass}"><span class="material-icons-round">${item.icon}</span></div><div class="list-text">${item.title}</div><div style="color: #666; font-size:0.8rem; margin-right:10px;">${formatDate(item.date)}</div><span class="material-icons-round arrow">chevron_right</span>`;
+        li.innerHTML = `<div class="icon-box ${item.colorClass}"><span class="material-icons-round">${item.icon}</span></div><div class="list-text">${item.title}</div><div style="color: #666; font-size:0.8rem; margin-right:10px;">${formatDate(item.date)} at ${formatTime(item.time)}</div><span class="material-icons-round arrow">chevron_right</span>`;
         listsContainer.appendChild(li);
     });
 }
@@ -691,7 +704,7 @@ function openChecklist(item) {
 function updateChecklistUI(item) {
     document.getElementById('cl-title').innerText = item.title;
     document.getElementById('cl-date').innerText = formatDate(item.date);
-    document.getElementById('cl-time').innerText = item.time;
+    document.getElementById('cl-time').innerText = formatTime(item.time);
     document.getElementById('cl-view-header').style.display = isEditMode ? 'none' : 'block';
 
     document.getElementById('edit-cl-title').value = item.title;
