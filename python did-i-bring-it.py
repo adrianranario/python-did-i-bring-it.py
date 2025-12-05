@@ -94,18 +94,14 @@ html_code = """
         .trash-icon { font-size: 35px; color: #aaa; transition: color 0.3s; }
         .hint-text { text-align: center; color: #888; font-size: 0.8rem; margin-bottom: 5px; }
 
-        /* AVATAR FIXES */
-        .avatar-large-wrapper { 
-            margin-top: 10px; margin-bottom: 20px; 
-            display: flex; justify-content: center; width: 100%; 
-        }
+        .avatar-large-wrapper { margin-top: 10px; margin-bottom: 20px; display: flex; justify-content: center; width: 100%; }
         .avatar-large, .avatar-large-circle {
             width: 140px !important; height: 140px !important;
             min-width: 140px; min-height: 140px;
             background-color: #fff; border-radius: 50%;
             overflow: hidden; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            margin: 0 auto; /* Center horizontally */
+            margin: 0 auto; 
         }
         .avatar-large-circle { background-color: #6495ED; display: flex; justify-content: center; align-items: flex-end; margin-bottom: 20px; }
         .avatar-large img, .avatar-large-circle img { width: 100%; height: 100%; object-fit: cover; }
@@ -454,7 +450,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupTrashDragDrop();
 });
 
-// FIXED TOUCH DND
+// FIXED TOUCH DND (GHOST REMOVAL FIRST)
 let draggedItem = null;
 let touchGhost = null;
 
@@ -466,17 +462,20 @@ function handleTouchStart(e) {
     
     // Create Ghost
     touchGhost = target.cloneNode(true);
-    touchGhost.id = "dragged-ghost-avatar"; // Add ID for forced removal
+    touchGhost.id = "dragged-ghost-avatar"; 
     touchGhost.style.position = 'fixed';
-    touchGhost.style.opacity = '0.7';
+    touchGhost.style.opacity = '0.9';
     touchGhost.style.pointerEvents = 'none';
     touchGhost.style.zIndex = '9999';
-    touchGhost.style.width = '60px'; 
-    touchGhost.style.height = '60px';
+    touchGhost.style.width = '70px'; 
+    touchGhost.style.height = '70px';
+    touchGhost.style.borderRadius = '50%';
+    touchGhost.style.border = '2px solid white';
+    touchGhost.style.boxShadow = '0 10px 20px rgba(0,0,0,0.3)';
     
     const touch = e.touches[0];
-    touchGhost.style.left = (touch.clientX - 30) + 'px';
-    touchGhost.style.top = (touch.clientY - 30) + 'px';
+    touchGhost.style.left = (touch.clientX - 35) + 'px';
+    touchGhost.style.top = (touch.clientY - 35) + 'px';
     document.body.appendChild(touchGhost);
 }
 
@@ -484,8 +483,8 @@ function handleTouchMove(e) {
     if(!touchGhost) return;
     e.preventDefault(); 
     const touch = e.touches[0];
-    touchGhost.style.left = (touch.clientX - 30) + 'px';
-    touchGhost.style.top = (touch.clientY - 30) + 'px';
+    touchGhost.style.left = (touch.clientX - 35) + 'px';
+    touchGhost.style.top = (touch.clientY - 35) + 'px';
     
     const trash = document.getElementById('profile-trash-target');
     const trashRect = trash.getBoundingClientRect();
@@ -498,26 +497,24 @@ function handleTouchMove(e) {
 }
 
 function handleTouchEnd(e) {
-    // 1. Remove the ghost immediately from DOM
+    // 1. IMMEDIATE CLEANUP
     const existingGhost = document.getElementById("dragged-ghost-avatar");
     if (existingGhost) {
         existingGhost.remove();
     }
     touchGhost = null;
-    
-    const trash = document.getElementById('profile-trash-target');
-    trash.classList.remove('trash-hover');
+    document.getElementById('profile-trash-target').classList.remove('trash-hover');
 
-    // 2. Logic
+    // 2. CHECK LOGIC
     if(!draggedItem) return;
+    const trash = document.getElementById('profile-trash-target');
     const trashRect = trash.getBoundingClientRect();
     const touch = e.changedTouches[0];
     
-    // Check if dropped inside trash bounds
     if (touch.clientX >= trashRect.left && touch.clientX <= trashRect.right && 
         touch.clientY >= trashRect.top && touch.clientY <= trashRect.bottom) {
         
-        // Wait 50ms to ensure UI has repainted without the ghost
+        // Small delay to allow browser repaint
         setTimeout(() => {
             deleteUserById(parseInt(draggedItem));
             draggedItem = null;
