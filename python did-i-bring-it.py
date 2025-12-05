@@ -6,7 +6,7 @@ import streamlit.components.v1 as components
 # ==========================================
 st.set_page_config(
     page_title="Did I Bring It?",
-    page_icon="✅",
+    page_icon="☑️", # Streamlit emoji fallback
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -27,7 +27,7 @@ hide_st_style = """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
 # ==========================================
-# 2. APP CONTENT
+# 2. APP CONTENT (HTML/CSS/JS)
 # ==========================================
 html_code = """
 <!DOCTYPE html>
@@ -37,7 +37,9 @@ html_code = """
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Did I Bring It?</title>
     
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12' fill='%232A4298'/%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z' fill='white'/%3E%3C/svg%3E">
+    <!-- MODERN APP ICON FAVICON -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%232A4298;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%236A82FB;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='0' y='0' width='32' height='32' rx='10' ry='10' fill='url(%23grad)'/%3E%3Cpath d='M9 16 L13.5 20.5 L23 11' stroke='white' stroke-width='3.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     
@@ -70,9 +72,8 @@ html_code = """
         #mobile-viewport {
             width: 100%;
             height: 100%;
-            /* Simulate a large phone on desktop, fill on mobile */
             max-width: 420px; 
-            max-height: 90vh; /* Fits nicely in browser window */
+            max-height: 90vh;
             background-color: var(--bg-color);
             position: relative;
             overflow: hidden;
@@ -81,8 +82,6 @@ html_code = """
             flex-direction: column;
             border-radius: 20px;
         }
-        
-        /* Actual Mobile Devices: Full Screen, No Radius/Shadow */
         @media (max-width: 480px) {
             #mobile-viewport { 
                 max-width: 100%; 
@@ -103,7 +102,23 @@ html_code = """
         }
         .screen.active { display: flex; }
 
-        /* HEADER (Fixed Top) */
+        .scrollable-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            width: 100%;
+            padding: 0 20px 20px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .scrollable-content::-webkit-scrollbar { display: none; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* HEADER */
         .app-bar { 
             display: flex; 
             justify-content: space-between; 
@@ -117,30 +132,10 @@ html_code = """
         .app-bar h2 { font-size: 1.25rem; font-weight: 600; color: #000; letter-spacing: 0.5px; }
         .icon-btn { background: none; border: none; font-size: 1rem; display: flex; align-items: center; cursor: pointer; color: var(--text-dark); }
 
-        /* SCROLLABLE AREA (Middle) */
-        .scrollable-content {
-            flex-grow: 1;
-            overflow-y: auto;
-            width: 100%;
-            padding: 0 20px 20px 20px; /* Side padding inside scroll area */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .scrollable-content::-webkit-scrollbar { display: none; }
-
-        /* CONTENT UTILS */
         .content-center { display: flex; flex-direction: column; align-items: center; width: 100%; }
         .input-group { width: 100%; display: flex; justify-content: center; }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
 
-        /* --- COMPONENTS --- */
-
-        /* Calendar */
+        /* COMPONENTS */
         .calendar-card { 
             background: #fff; 
             width: 100%;
@@ -161,7 +156,6 @@ html_code = """
         .time-row { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f0f0f0; padding-top: 15px; width: 100%; }
         .chip-gray { background: #eee; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 500; }
 
-        /* Reminders Section */
         .reminders-section { width: 100%; margin-bottom: 20px; }
         .reminders-section h4 { margin: 0 0 15px 5px; font-size: 1.1rem; font-weight: 600; text-align: left; }
         
@@ -173,22 +167,18 @@ html_code = """
         .rem-title { font-weight: 600; margin-right: auto; margin-left: 10px; color: var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .rem-date, .rem-time { background: #CFD8DC; padding: 5px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 500; margin-left: 5px; white-space: nowrap; flex-shrink: 0;}
 
-        /* Icons */
         .icon-box { width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
         .icon-box span { color: white; font-size: 24px; }
-        .profile-icon-mini { width: 45px !important; height: 45px !important; border-radius: 50%; background: #87CEEB; overflow: hidden; cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-shrink: 0; }
-        .profile-icon-mini img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        
+        /* CATEGORY COLORS */
+        .bg-purple { background: #D1C4E9; } .bg-purple span { color: #5E35B1; }
+        .bg-orange { background: #FFE0B2; } .bg-orange span { color: #FB8C00; }
+        .bg-green { background: #C8E6C9; } .bg-green span { color: #43A047; }
+        .bg-blue { background: #BBDEFB; } .bg-blue span { color: #1976D2; }
+        .bg-gray { background: #90A4AE; } .bg-gray span { color: #37474F; }
+        .bg-red { background: #ffcdd2; } .bg-red span { color: #c62828; }
+        .bg-teal { background: #b2dfdb; } .bg-teal span { color: #00695c; }
 
-        /* Avatars */
-        .avatar-large, .avatar-large-circle { width: 130px !important; height: 130px !important; min-width: 130px; min-height: 130px; background-color: #fff; border-radius: 50%; overflow: hidden; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .avatar-large-circle { background-color: #6495ED; display: flex; justify-content: center; align-items: flex-end; }
-        .avatar-large img, .avatar-large-circle img { width: 100%; height: 100%; object-fit: cover; }
-        .avatar-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; width: 100%; justify-items: center; }
-        .avatar-option { width: 70px; height: 70px; border-radius: 50%; background-color: #ddd; overflow: hidden; border: 3px solid transparent; cursor: pointer; }
-        .avatar-option.selected { border-color: #fff; box-shadow: 0 0 0 3px var(--primary-blue); }
-        .avatar-option img { width: 100%; height: 100%; object-fit: cover; }
-
-        /* Lists & Trash */
         .list-container { width: 100%; display: flex; flex-direction: column; }
         .list-item { background: #D4F1F4; border: 1px solid #7F8C8D; border-radius: 20px; padding: 15px; display: flex; align-items: center; margin-bottom: 15px; cursor: pointer; width: 100%; }
         .list-text { font-weight: 600; flex-grow: 1; margin-left: 15px; }
@@ -202,13 +192,12 @@ html_code = """
         .trash-container.trash-hover .trash-icon { color: #ff5252; }
         .hint-text { text-align: center; color: #888; font-size: 0.8rem; margin-top: 10px; flex-shrink: 0; width: 100%; display: block; }
 
-        /* Forms */
+        /* FORMS & AVATARS */
         .form-container { width: 100%; max-width: 340px; display: flex; flex-direction: column; gap: 15px; }
         .form-container label { font-size: 0.95rem; font-weight: 500; color: #444; display: block; margin-bottom: 5px; margin-top: 5px; text-align: left; width: 100%; }
         .input-field { width: 100%; padding: 12px 15px; border-radius: 12px; border: 1px solid #ccc; background: #fff; font-size: 1rem; outline: none; font-family: var(--font-poppins); }
         .underline-input { background: transparent; border: none; border-bottom: 2px solid var(--text-dark); text-align: center; font-size: 1.5rem; padding: 10px; width: 80%; margin-bottom: 30px; outline: none; font-weight: 500; }
 
-        /* Category Grid */
         .category-label { font-size: 0.9rem; font-weight: 500; color: #666; margin-bottom: 5px; align-self: flex-start; margin-left: 5px; }
         .category-grid { display: flex; gap: 12px; overflow-x: auto; padding: 10px 5px; width: 100%; margin-bottom: 10px; scrollbar-width: none; }
         .category-grid::-webkit-scrollbar { display: none; }
@@ -216,16 +205,6 @@ html_code = """
         .category-option.selected { border-color: #2A4298; transform: scale(1.1); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
         .category-option span { color: white; font-size: 26px; }
 
-        /* Colors */
-        .bg-purple { background: #D1C4E9; } .bg-purple span { color: #5E35B1; }
-        .bg-orange { background: #FFE0B2; } .bg-orange span { color: #FB8C00; }
-        .bg-green { background: #C8E6C9; } .bg-green span { color: #43A047; }
-        .bg-blue { background: #BBDEFB; } .bg-blue span { color: #1976D2; }
-        .bg-gray { background: #90A4AE; } .bg-gray span { color: #37474F; }
-        .bg-red { background: #ffcdd2; } .bg-red span { color: #c62828; }
-        .bg-teal { background: #b2dfdb; } .bg-teal span { color: #00695c; }
-
-        /* Buttons & Other */
         .button-row { display: flex; gap: 20px; justify-content: center; width: 100%; margin-top: 30px; margin-bottom: 30px; flex-shrink: 0; }
         .btn-primary { background-color: var(--button-blue); padding: 12px 30px; border-radius: 12px; border: none; cursor: pointer; font-weight: 600; font-size: 1rem; width: 130px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .btn-secondary { background-color: #fff; padding: 12px 30px; border-radius: 12px; border: none; cursor: pointer; font-weight: 500; font-size: 1rem; width: 130px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
@@ -233,14 +212,23 @@ html_code = """
         .btn-text-danger { margin-top: 10px; color: var(--danger-color); background: none; border: none; font-weight: 600; cursor: pointer; font-size: 0.9rem; }
         .btn-done-pill { margin-top: 30px; background: #D1C4E9; width: 150px; padding: 15px; border: none; border-radius: 30px; font-size: 1.1rem; font-weight: 600; display: block; margin-left: auto; margin-right: auto; cursor: pointer; }
 
-        /* User Switcher */
         .switch-accounts-section { width: 100%; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 20px; margin-top: 10px; text-align: center; }
         .users-row { display: flex; justify-content: center; gap: 15px; margin-top: 10px; flex-wrap: wrap; }
         .small-user-avatar { width: 50px; height: 50px; border-radius: 50%; overflow: hidden; cursor: grab; border: 2px solid transparent; }
         .small-user-avatar.active-user { border-color: var(--primary-blue); box-shadow: 0 0 10px rgba(42, 66, 152, 0.3); }
         .small-user-avatar img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
 
-        /* Checklist Items */
+        .avatar-large, .avatar-large-circle { width: 130px !important; height: 130px !important; min-width: 130px; min-height: 130px; background-color: #fff; border-radius: 50%; overflow: hidden; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .avatar-large-circle { background-color: #6495ED; display: flex; justify-content: center; align-items: flex-end; }
+        .avatar-large img, .avatar-large-circle img { width: 100%; height: 100%; object-fit: cover; }
+        .avatar-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; width: 100%; justify-items: center; }
+        .avatar-option { width: 70px; height: 70px; border-radius: 50%; background-color: #ddd; overflow: hidden; border: 3px solid transparent; cursor: pointer; }
+        .avatar-option.selected { border-color: #fff; box-shadow: 0 0 0 3px var(--primary-blue); }
+        .avatar-option img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .profile-icon-mini { width: 45px !important; height: 45px !important; border-radius: 50%; background: #87CEEB; overflow: hidden; cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-shrink: 0; }
+        .profile-icon-mini img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
         .checklist-content { padding: 20px 40px; width: 100%; }
         .big-title { font-size: 2.5rem; font-weight: 600; margin-bottom: 10px; }
         .tags-row { display: flex; gap: 10px; margin-bottom: 40px; }
@@ -256,7 +244,6 @@ html_code = """
         .temp-tag { background: #fff; padding: 5px 10px; border-radius: 15px; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; border: 1px solid #ccc; margin-right: 5px; margin-bottom: 5px; }
         .temp-tags-container { display: flex; flex-wrap: wrap; margin-top: 10px; width: 100%; }
 
-        /* Splash */
         #splash-screen { background-color: #2A4298; z-index: 9999; display: flex; align-items: center; justify-content: center; position: absolute; top:0; left:0; width: 100%; height: 100%; }
         .union-logo { width: 100px; height: 100px; border: 2px solid #879BF0; border-radius: 50% 0 50% 0; display: flex; justify-content: center; align-items: center; margin-bottom: 20px; transform: rotate(-45deg); box-shadow: 0 0 20px rgba(135, 155, 240, 0.5); }
         .union-logo .checkmark { font-size: 60px; color: #879BF0; transform: rotate(45deg); }
