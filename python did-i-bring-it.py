@@ -11,7 +11,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Hide Streamlit's default UI elements for a cleaner "App" look
+# Hide Streamlit's default UI elements
 hide_st_style = """
             <style>
             #MainMenu {visibility: hidden;}
@@ -30,8 +30,6 @@ st.markdown(hide_st_style, unsafe_allow_html=True)
 # ==========================================
 # 2. APP CONTENT (HTML/CSS/JS)
 # ==========================================
-# This contains the full logic: Dynamic Lists, Drag-to-Delete User, Isolated Data, etc.
-
 html_code = """
 <!DOCTYPE html>
 <html lang="en">
@@ -60,7 +58,6 @@ html_code = """
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            /* Transparent background so it blends with Streamlit if needed, or dark for contrast */
             background-color: #262730; 
             font-family: var(--font-poppins);
             height: 100vh;
@@ -76,7 +73,7 @@ html_code = """
             width: 100%;
             height: 100%;
             max-width: 414px;
-            max-height: 915px; /* Fixed height for simulator feel */
+            max-height: 915px;
             background-color: var(--bg-color);
             position: relative;
             overflow: hidden;
@@ -452,9 +449,8 @@ document.addEventListener('DOMContentLoaded', () => {
         splash.style.opacity = '0';
         setTimeout(() => {
             splash.style.display = 'none';
-            navigateTo('add-user-screen'); 
-            isCreatingNewUser = true; 
-            resetUserForm();
+            // CHANGED: Go directly to home-screen instead of add-user
+            navigateTo('home-screen'); 
         }, 500);
     }, 2000);
 
@@ -551,6 +547,7 @@ function saveUser() {
     if (isCreatingNewUser) {
         const newId = Date.now();
         users.push({ id: newId, name: tempUser.name, avatar: tempUser.avatar });
+        // Switch to new user immediately -> Empty Lists
         activeUserId = newId;
     } else {
         const userIndex = users.findIndex(u => u.id === activeUserId);
@@ -602,8 +599,11 @@ function setupProfileTrashDragDrop() {
 function deleteUserById(id) {
     if(users.length <= 1) { alert("Cannot delete the only user."); return; }
     if(confirm("Delete this user and their data?")) {
+        // Cascade Delete lists
         checklists = checklists.filter(item => item.userId !== id);
+        // Remove User
         users = users.filter(u => u.id !== id);
+        // Fallback user
         if(activeUserId === id) activeUserId = users[0].id;
         updateProfileDisplay();
         renderApp();
@@ -628,6 +628,7 @@ function renderCalendar() {
     const firstDayIndex = new Date(displayedYear, displayedMonth, 1).getDay();
     const daysInMonth = new Date(displayedYear, displayedMonth + 1, 0).getDate();
 
+    // Filter for active user
     const userLists = checklists.filter(c => c.userId === activeUserId);
 
     for(let i=0; i<firstDayIndex; i++) grid.appendChild(Object.assign(document.createElement('div'), {className: 'day empty'}));
@@ -782,9 +783,7 @@ function formatDate(isoStr) {
 # ==========================================
 # 3. RENDER THE COMPONENT
 # ==========================================
-# We wrap the HTML in a container to center it effectively on the Streamlit page
 c1, c2, c3 = st.columns([1, 2, 1])
 
 with c2:
-    # Render the HTML. We set a large height to accommodate the mobile simulation.
     components.html(html_code, height=950, scrolling=True)
