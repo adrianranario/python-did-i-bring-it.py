@@ -75,20 +75,35 @@ html_code = """
             position: relative;
             overflow: hidden;
             box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
         }
         @media (max-width: 480px) {
             #mobile-viewport { max-width: 100%; max-height: 100%; border-radius: 0; }
         }
 
         .screen {
-            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            overflow-y: auto; background-color: var(--bg-color);
+            display: none; 
+            flex-direction: column;
+            width: 100%; 
+            height: 100%;
+            background-color: var(--bg-color);
             animation: fadeIn 0.3s ease-in-out;
         }
-        .flex-column-screen { display: none; flex-direction: column; }
-        .screen.active { display: block; }
-        .flex-column-screen.active { display: flex; }
-        .screen::-webkit-scrollbar { display: none; }
+        .screen.active { display: flex; }
+        
+        /* Make content scrollable while keeping app bar fixed */
+        .scrollable-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        /* Hide Scrollbar */
+        .scrollable-content::-webkit-scrollbar { display: none; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -96,19 +111,30 @@ html_code = """
         }
 
         /* UI ELEMENTS */
-        .app-bar { display: flex; justify-content: space-between; align-items: center; padding: 20px; margin-top: 10px; flex-shrink: 0; }
+        .app-bar { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 20px; 
+            margin-top: 10px; 
+            flex-shrink: 0; 
+            background: transparent;
+            z-index: 10;
+        }
         .app-bar h2 { font-size: 1.25rem; font-weight: 600; color: #000; letter-spacing: 0.5px; }
         .icon-btn { background: none; border: none; font-size: 1rem; display: flex; align-items: center; cursor: pointer; color: var(--text-dark); }
-        .content-center { display: flex; flex-direction: column; align-items: center; padding: 20px; width: 100%; }
+        
+        .content-center { display: flex; flex-direction: column; align-items: center; width: 100%; }
 
         .trash-container { 
             display: flex; justify-content: center; align-items: center;
             padding: 20px; transition: transform 0.2s; margin-bottom: 20px; margin-top: 10px;
+            flex-shrink: 0;
         }
         .trash-container.trash-hover { transform: scale(1.3); }
         .trash-icon { font-size: 35px; color: #aaa; transition: color 0.3s; }
         .trash-container.trash-hover .trash-icon { color: #ff5252; }
-        .hint-text { text-align: center; color: #888; font-size: 0.8rem; margin-top: 10px; }
+        .hint-text { text-align: center; color: #888; font-size: 0.8rem; margin-top: 10px; flex-shrink: 0; }
 
         .profile-icon-mini { 
             width: 45px !important; height: 45px !important; 
@@ -134,21 +160,66 @@ html_code = """
         .avatar-option.selected { border-color: #fff; box-shadow: 0 0 0 3px var(--primary-blue); }
         .avatar-option img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* LIST CATEGORY GRID (NEW) */
-        .category-label { font-size: 0.9rem; font-weight: 500; color: #666; margin-bottom: 10px; align-self: flex-start; margin-left: 5px; }
+        /* --- FORM STYLING (IMPROVED) --- */
+        .form-container {
+            width: 100%;
+            max-width: 340px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* Spacing between sections */
+        }
+        
+        .form-container label {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #444;
+            display: block;
+            margin-bottom: 5px;
+            margin-top: 5px;
+            text-align: left;
+            width: 100%;
+        }
+
+        .input-field { 
+            width: 100%; 
+            padding: 12px 15px; 
+            border-radius: 12px; 
+            border: 1px solid #ccc; 
+            background: #fff; 
+            font-size: 1rem; 
+            outline: none; 
+            font-family: var(--font-poppins);
+        }
+        .input-field:focus { border-color: var(--primary-blue); }
+
+        /* LIST CATEGORY GRID */
         .category-grid { 
-            display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; width: 100%; 
-            margin-bottom: 20px; scrollbar-width: none; 
+            display: flex; 
+            gap: 12px; 
+            overflow-x: auto; 
+            padding: 10px 5px; 
+            width: 100%; 
+            margin-bottom: 10px; 
+            scrollbar-width: none; /* Firefox */
         }
-        .category-grid::-webkit-scrollbar { display: none; }
+        .category-grid::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+        
         .category-option {
-            width: 50px; height: 50px; border-radius: 50%; 
+            width: 55px; height: 55px; 
+            border-radius: 50%; 
             display: flex; justify-content: center; align-items: center;
-            cursor: pointer; flex-shrink: 0; border: 3px solid transparent;
-            transition: transform 0.2s;
+            cursor: pointer; flex-shrink: 0; 
+            border: 2px solid transparent;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-        .category-option.selected { border-color: var(--primary-blue); transform: scale(1.1); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .category-option span { color: white; font-size: 24px; }
+        .category-option.selected { 
+            border-color: #2A4298; 
+            transform: scale(1.1); 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2); 
+        }
+        .category-option span { color: white; font-size: 26px; }
+
+        .add-item-row { display: flex; gap: 10px; width: 100%; }
 
         .switch-accounts-section { width: 100%; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 20px; margin-top: 10px; text-align: center; }
         .users-row { display: flex; justify-content: center; gap: 15px; margin-top: 10px; flex-wrap: wrap; }
@@ -158,12 +229,11 @@ html_code = """
 
         .input-group { width: 100%; display: flex; justify-content: center; }
         .underline-input { background: transparent; border: none; border-bottom: 2px solid var(--text-dark); text-align: center; font-size: 1.5rem; padding: 10px; width: 80%; margin-bottom: 30px; outline: none; font-weight: 500; }
-        .input-field { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #ddd; background: #fff; font-size: 1rem; margin-bottom: 15px; outline: none; }
 
-        .button-row { display: flex; gap: 20px; justify-content: center; width: 100%; }
+        .button-row { display: flex; gap: 20px; justify-content: center; width: 100%; margin-top: 30px; margin-bottom: 30px;}
         .btn-primary { background-color: var(--button-blue); padding: 12px 30px; border-radius: 12px; border: none; cursor: pointer; font-weight: 600; font-size: 1rem; width: 130px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .btn-secondary { background-color: #fff; padding: 12px 30px; border-radius: 12px; border: none; cursor: pointer; font-weight: 500; font-size: 1rem; width: 130px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .btn-icon-small { background: var(--primary-blue); color: white; border: none; border-radius: 8px; width: 45px; cursor: pointer; display: flex; justify-content: center; align-items: center; }
+        .btn-icon-small { background: var(--primary-blue); color: white; border: none; border-radius: 8px; width: 50px; cursor: pointer; display: flex; justify-content: center; align-items: center; flex-shrink: 0;}
 
         .calendar-card { background: #fff; margin: 10px 20px; border-radius: 25px; padding: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
@@ -186,7 +256,7 @@ html_code = """
         .rem-title { font-weight: 600; margin-right: auto; margin-left: 10px; color: var(--text-dark); }
         .rem-date, .rem-time { background: #CFD8DC; padding: 5px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 500; margin-left: 5px; white-space: nowrap; }
 
-        .list-container { padding: 0 20px; overflow-y: auto; }
+        .list-container { padding: 0 20px; }
         .list-item { background: #D4F1F4; border: 1px solid #7F8C8D; border-radius: 20px; padding: 15px; display: flex; align-items: center; margin-bottom: 15px; cursor: pointer; }
         .list-text { font-weight: 600; flex-grow: 1; margin-left: 15px; }
 
@@ -219,7 +289,7 @@ html_code = """
         .temp-tags-container { display: flex; flex-wrap: wrap; margin-top: 10px; }
 
         /* SPLASH */
-        #splash-screen { background-color: #2A4298; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        #splash-screen { background-color: #2A4298; z-index: 9999; display: flex; align-items: center; justify-content: center; position: absolute; top:0; left:0; }
         .union-logo { width: 100px; height: 100px; border: 2px solid #879BF0; border-radius: 50% 0 50% 0; display: flex; justify-content: center; align-items: center; margin-bottom: 20px; transform: rotate(-45deg); box-shadow: 0 0 20px rgba(135, 155, 240, 0.5); }
         .union-logo .checkmark { font-size: 60px; color: #879BF0; transform: rotate(45deg); }
         .logo-container { display: flex; flex-direction: column; align-items: center; color: white; }
@@ -247,7 +317,7 @@ html_code = """
             <h2 id="user-screen-title" style="flex-grow:1; text-align:center; margin-right: 24px;">Add New User</h2>
         </div>
         
-        <div class="content-center">
+        <div class="scrollable-content">
             <div class="avatar-large-wrapper">
                 <div class="avatar-large">
                     <img id="setup-main-avatar" src="" alt="Avatar">
@@ -268,14 +338,14 @@ html_code = """
     </div>
 
     <!-- SCREEN 3: PROFILE SCREEN -->
-    <div id="profile-screen" class="screen flex-column-screen">
+    <div id="profile-screen" class="screen">
         <div class="app-bar">
             <button class="icon-btn" onclick="navigateTo('home-screen')"><span class="material-icons-round">arrow_back_ios</span></button>
             <h2>Profile</h2>
             <button class="icon-btn" onclick="startAddUserFlow()"><span class="material-icons-round">person_add</span></button>
         </div>
         
-        <div class="content-center" style="flex-grow: 1;">
+        <div class="scrollable-content">
             <div class="avatar-large-circle">
                 <img id="profile-main-avatar" src="" alt="User">
             </div>
@@ -308,40 +378,44 @@ html_code = """
             </div>
         </div>
 
-        <div class="calendar-card">
-            <div class="calendar-header">
-                <h3 id="calendar-month-year">Loading...</h3> 
-                <div class="calendar-nav">
-                    <span class="material-icons-round" onclick="changeMonth(-1)">chevron_left</span>
-                    <span class="material-icons-round" onclick="changeMonth(1)">chevron_right</span>
+        <div class="scrollable-content">
+            <div class="calendar-card">
+                <div class="calendar-header">
+                    <h3 id="calendar-month-year">Loading...</h3> 
+                    <div class="calendar-nav">
+                        <span class="material-icons-round" onclick="changeMonth(-1)">chevron_left</span>
+                        <span class="material-icons-round" onclick="changeMonth(1)">chevron_right</span>
+                    </div>
+                </div>
+                <div class="calendar-grid-header">
+                    <div class="day-name">SUN</div><div class="day-name">MON</div><div class="day-name">TUE</div><div class="day-name">WED</div><div class="day-name">THU</div><div class="day-name">FRI</div><div class="day-name">SAT</div>
+                </div>
+                <div class="calendar-days" id="calendar-days-grid"></div>
+
+                <div class="time-row">
+                    <span style="font-weight: 500; color: #555;">Time</span>
+                    <span class="chip-gray" id="current-time-display">--:--</span>
                 </div>
             </div>
-            <div class="calendar-grid-header">
-                <div class="day-name">SUN</div><div class="day-name">MON</div><div class="day-name">TUE</div><div class="day-name">WED</div><div class="day-name">THU</div><div class="day-name">FRI</div><div class="day-name">SAT</div>
-            </div>
-            <div class="calendar-days" id="calendar-days-grid"></div>
 
-            <div class="time-row">
-                <span style="font-weight: 500; color: #555;">Time</span>
-                <span class="chip-gray" id="current-time-display">--:--</span>
+            <div class="reminders-section">
+                <h4>Reminders:</h4>
+                <div id="home-reminders-list"></div>
             </div>
-        </div>
-
-        <div class="reminders-section">
-            <h4>Reminders:</h4>
-            <div id="home-reminders-list"></div>
         </div>
     </div>
 
     <!-- SCREEN 5: LISTS VIEW -->
-    <div id="lists-screen" class="screen flex-column-screen">
+    <div id="lists-screen" class="screen">
         <div class="app-bar">
             <button class="icon-btn" onclick="navigateTo('home-screen')"><span class="material-icons-round">arrow_back_ios</span> Home</button>
             <h2 style="flex-grow: 1; text-align: center; margin-right: 60px;">Lists</h2>
             <button class="icon-btn" onclick="navigateTo('add-list-screen')"><span class="material-icons-round" style="font-size: 28px;">add</span></button>
         </div>
 
-        <div class="list-container" id="all-lists-container" style="flex-grow: 1;"></div>
+        <div class="scrollable-content" style="padding: 0;">
+            <div class="list-container" id="all-lists-container" style="padding: 20px;"></div>
+        </div>
 
         <p class="hint-text">Drag a list to the trash to delete</p>
         <div class="trash-container" id="trash-target">
@@ -357,7 +431,7 @@ html_code = """
             <button class="icon-btn" onclick="toggleEditChecklistMode()"><span class="material-icons-round" id="cl-edit-icon">edit</span></button>
         </div>
         
-        <div class="checklist-content">
+        <div class="scrollable-content">
             <div id="cl-view-header">
                 <h1 class="big-title" id="cl-title">Title</h1>
                 <div class="tags-row">
@@ -392,13 +466,13 @@ html_code = """
             <div style="width: 24px;"></div>
         </div>
 
-        <div class="content-center scrollable-content">
+        <div class="scrollable-content">
             <div class="form-container">
                 <label>List Title</label>
                 <input type="text" id="new-list-title" class="input-field" placeholder="e.g. Gym, Work">
                 
                 <!-- NEW: Category Icon Selection -->
-                <div class="category-label">Choose Icon</div>
+                <label>Choose Icon</label>
                 <div id="list-category-grid" class="category-grid"></div>
 
                 <label>Date & Time</label>
@@ -415,7 +489,7 @@ html_code = """
                 <div id="temp-items-list" class="temp-tags-container"></div>
             </div>
 
-            <div class="button-row" style="margin-top: 30px;">
+            <div class="button-row">
                 <button class="btn-primary" onclick="createNewList()">Create</button>
             </div>
         </div>
@@ -455,13 +529,16 @@ const avatars = [
 ];
 
 const categoryOptions = [
+    { icon: 'checklist', color: 'bg-blue' },
     { icon: 'directions_run', color: 'bg-purple' },
     { icon: 'pool', color: 'bg-orange' },
     { icon: 'work', color: 'bg-blue' },
     { icon: 'flight', color: 'bg-green' },
     { icon: 'shopping_cart', color: 'bg-gray' },
     { icon: 'hiking', color: 'bg-teal' },
-    { icon: 'fitness_center', color: 'bg-red' }
+    { icon: 'fitness_center', color: 'bg-red' },
+    { icon: 'forest', color: 'bg-green' },
+    { icon: 'school', color: 'bg-orange' },
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -617,7 +694,6 @@ function saveUser() {
 function updateProfileDisplay() {
     const currentUser = users.find(u => u.id === activeUserId);
     if(!currentUser) {
-        // If no user (initial state), clear profile details
         document.getElementById('home-avatar-img').src = '';
         return;
     }
@@ -707,7 +783,7 @@ function renderApp() {
     const listsContainer = document.getElementById('all-lists-container');
     homeContainer.innerHTML = ''; listsContainer.innerHTML = '';
 
-    if (!activeUserId) return; // No user active
+    if (!activeUserId) return; 
 
     const userLists = checklists.filter(c => c.userId === activeUserId);
 
@@ -811,12 +887,11 @@ function renderCategoryGrid() {
     container.innerHTML = '';
     categoryOptions.forEach(opt => {
         const div = document.createElement('div');
-        // Default select 'checklist' icon if nothing selected, but we start with selection
         div.className = `category-option ${opt.color} ${selectedCategory.icon === opt.icon ? 'selected' : ''}`;
         div.innerHTML = `<span class="material-icons-round">${opt.icon}</span>`;
         div.onclick = () => {
             selectedCategory = opt;
-            // Update UI selection
+            // visual update
             document.querySelectorAll('#list-category-grid .category-option').forEach(el => el.classList.remove('selected'));
             div.classList.add('selected');
         };
