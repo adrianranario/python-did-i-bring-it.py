@@ -1,9 +1,6 @@
 import streamlit as st
 import streamlit.components.v1 as components
 
-# ==========================================
-# 1. CONFIGURE STREAMLIT PAGE
-# ==========================================
 st.set_page_config(
     page_title="Did I Bring It?",
     page_icon="☑️",
@@ -11,7 +8,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Hide Streamlit's default UI elements
 hide_st_style = """
             <style>
             #MainMenu {visibility: hidden;}
@@ -22,9 +18,6 @@ hide_st_style = """
             """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-# ==========================================
-# 2. APP CONTENT
-# ==========================================
 html_code = """
 <!DOCTYPE html>
 <html lang="en">
@@ -61,6 +54,7 @@ html_code = """
             overflow: hidden;
             margin: 0;
             user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         #mobile-viewport {
@@ -80,7 +74,6 @@ html_code = """
             #mobile-viewport { max-width: 100%; max-height: 100%; border-radius: 0; box-shadow: none; }
         }
 
-        /* LAYOUT & SCROLLING */
         .screen { display: none; flex-direction: column; width: 100%; height: 100%; background-color: var(--bg-color); animation: fadeIn 0.3s ease-in-out; }
         .screen.active { display: flex; }
         .scrollable-content { flex-grow: 1; overflow-y: auto; width: 100%; padding: 0 20px 20px 20px; display: flex; flex-direction: column; align-items: center; }
@@ -88,33 +81,33 @@ html_code = """
         
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* HEADER */
         .app-bar { display: flex; justify-content: space-between; align-items: center; padding: 20px; flex-shrink: 0; background: transparent; z-index: 10; min-height: 70px; }
         .app-bar h2 { font-size: 1.25rem; font-weight: 600; color: #000; letter-spacing: 0.5px; }
         .icon-btn { background: none; border: none; font-size: 1rem; display: flex; align-items: center; cursor: pointer; color: var(--text-dark); }
 
-        /* CONTENT CENTER */
         .content-center { display: flex; flex-direction: column; align-items: center; width: 100%; }
         
-        /* FOOTER */
         .profile-footer { margin-top: auto; width: 100%; display: flex; flex-direction: column; align-items: center; padding-bottom: 20px; flex-shrink: 0; }
         
-        /* TRASH */
         .trash-container { display: flex; justify-content: center; align-items: center; padding: 15px; transition: transform 0.2s; }
         .trash-container.trash-hover .trash-icon { color: #ff5252; transform: scale(1.4); transition: 0.2s; }
         .trash-icon { font-size: 35px; color: #aaa; transition: color 0.3s; }
         .hint-text { text-align: center; color: #888; font-size: 0.8rem; margin-bottom: 5px; }
 
-        /* AVATARS */
-        .avatar-large-wrapper { margin-top: 10px; margin-bottom: 20px; display: flex; justify-content: center; width: 100%; }
+        /* AVATAR FIXES */
+        .avatar-large-wrapper { 
+            margin-top: 10px; margin-bottom: 20px; 
+            display: flex; justify-content: center; width: 100%; 
+        }
         .avatar-large, .avatar-large-circle {
             width: 140px !important; height: 140px !important;
             min-width: 140px; min-height: 140px;
             background-color: #fff; border-radius: 50%;
-            overflow: hidden; margin-bottom: 20px;
+            overflow: hidden; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin: 0 auto; /* Center horizontally */
         }
-        .avatar-large-circle { background-color: #6495ED; display: flex; justify-content: center; align-items: flex-end; }
+        .avatar-large-circle { background-color: #6495ED; display: flex; justify-content: center; align-items: flex-end; margin-bottom: 20px; }
         .avatar-large img, .avatar-large-circle img { width: 100%; height: 100%; object-fit: cover; }
 
         .avatar-grid { 
@@ -126,10 +119,8 @@ html_code = """
         .avatar-option.selected { border-color: #fff; box-shadow: 0 0 0 3px var(--primary-blue); }
         .avatar-option img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* INPUTS */
         .input-group { width: 100%; display: flex; justify-content: center; margin-bottom: 10px; }
         
-        /* Specific Style for Name Input */
         .underline-input { 
             background: transparent; 
             border: none; 
@@ -144,12 +135,10 @@ html_code = """
             font-family: var(--font-poppins);
         }
 
-        /* Standard Input for Forms */
         .form-container { width: 100%; max-width: 340px; display: flex; flex-direction: column; gap: 15px; }
         .form-container label { font-size: 0.95rem; font-weight: 500; color: #444; display: block; margin-bottom: 5px; margin-top: 5px; text-align: left; width: 100%; }
         .input-field { width: 100%; padding: 12px 15px; border-radius: 12px; border: 1px solid #ccc; background: #fff; font-size: 1rem; outline: none; font-family: var(--font-poppins); }
 
-        /* BUTTONS */
         .button-row { display: flex; gap: 20px; justify-content: center; width: 100%; margin-top: 20px; margin-bottom: 20px; flex-shrink: 0; }
         .btn-primary { background-color: var(--button-blue); padding: 12px 30px; border-radius: 12px; border: none; cursor: pointer; font-weight: 600; font-size: 1rem; width: 130px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .btn-secondary { background-color: #fff; padding: 12px 30px; border-radius: 12px; border: none; cursor: pointer; font-weight: 500; font-size: 1rem; width: 130px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
@@ -157,7 +146,6 @@ html_code = """
         .btn-text-danger { margin-top: 10px; color: var(--danger-color); background: none; border: none; font-weight: 600; cursor: pointer; font-size: 0.9rem; margin-bottom: 30px; }
         .btn-done-pill { margin-top: 30px; background: #D1C4E9; width: 150px; padding: 15px; border: none; border-radius: 30px; font-size: 1.1rem; font-weight: 600; display: block; margin-left: auto; margin-right: auto; cursor: pointer; }
 
-        /* CALENDAR */
         .calendar-card { background: #fff; width: 100%; border-radius: 25px; padding: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); margin-bottom: 20px; margin-top: 10px; flex-shrink: 0; }
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .calendar-days, .calendar-grid-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; margin-bottom: 15px; }
@@ -169,13 +157,11 @@ html_code = """
         .time-row { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f0f0f0; padding-top: 15px; width: 100%; }
         .chip-gray { background: #eee; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 500; }
 
-        /* REMINDERS */
         .reminders-section { width: 100%; margin-bottom: 20px; }
         .reminder-card { background: rgba(255, 255, 255, 0.7); border: 2px solid #fff; border-radius: 25px; padding: 10px 15px; display: flex; align-items: center; margin-bottom: 12px; height: 70px; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.02); width: 100%; }
         .rem-title { font-weight: 600; margin-right: auto; margin-left: 10px; color: var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .rem-date, .rem-time { background: #CFD8DC; padding: 5px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 500; margin-left: 5px; white-space: nowrap; flex-shrink: 0;}
 
-        /* ICONS */
         .icon-box { width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
         .icon-box span { color: white; font-size: 24px; }
         
@@ -201,12 +187,10 @@ html_code = """
         .category-option.selected { border-color: #2A4298; transform: scale(1.1); box-shadow: 0 4px 8px rgba(0,0,0,0.2); border-width: 3px; }
         .category-option span { color: white; font-size: 26px; }
 
-        /* LISTS */
         .list-container { width: 100%; display: flex; flex-direction: column; }
         .list-item { background: #D4F1F4; border: 1px solid #7F8C8D; border-radius: 20px; padding: 15px; display: flex; align-items: center; margin-bottom: 15px; cursor: pointer; width: 100%; }
         .list-text { font-weight: 600; flex-grow: 1; margin-left: 15px; }
 
-        /* USER SWITCHER */
         .switch-accounts-section { width: 100%; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 20px; margin-top: 10px; text-align: center; }
         .users-row { display: flex; justify-content: center; gap: 15px; margin-top: 10px; flex-wrap: wrap; }
         
@@ -217,20 +201,13 @@ html_code = """
         .profile-icon-mini { width: 45px !important; height: 45px !important; border-radius: 50%; background: #87CEEB; overflow: hidden; cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-shrink: 0; }
         .profile-icon-mini img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-        /* CHECKLIST ITEMS */
         .checklist-content { padding: 20px 40px; width: 100%; }
         .big-title { font-size: 2.5rem; font-weight: 600; margin-bottom: 10px; }
         .tags-row { display: flex; gap: 10px; margin-bottom: 40px; }
         .tag { background: #CFD8DC; padding: 5px 15px; border-radius: 15px; font-size: 0.9rem; font-weight: 500; }
         
         .check-group { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-        .checkbox-container { 
-            display: flex; align-items: center; position: relative; 
-            padding: 15px 20px; 
-            cursor: pointer; font-size: 1.1rem; font-weight: 500; 
-            width: 100%; background: #fff; border-radius: 20px; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: all 0.2s; 
-        }
+        .checkbox-container { display: flex; align-items: center; position: relative; padding: 15px 20px; cursor: pointer; font-size: 1.1rem; font-weight: 500; width: 100%; background: #fff; border-radius: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: all 0.2s; }
         .checkbox-container input { position: absolute; opacity: 0; }
         .checkmark-box { height: 24px; width: 24px; border: 2px solid var(--text-dark); border-radius: 6px; margin-right: 15px; flex-shrink: 0; position: relative; }
         .checkbox-container input:checked ~ .checkmark-box { background-color: var(--primary-blue); border-color: var(--primary-blue); }
@@ -243,7 +220,6 @@ html_code = """
         .temp-tag { background: #fff; padding: 5px 10px; border-radius: 15px; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; border: 1px solid #ccc; margin-right: 5px; margin-bottom: 5px; }
         .temp-tags-container { display: flex; flex-wrap: wrap; margin-top: 10px; width: 100%; }
 
-        /* SPLASH */
         #splash-screen { background-color: #2A4298; z-index: 9999; display: flex; align-items: center; justify-content: center; position: absolute; top:0; left:0; width: 100%; height: 100%; }
         .union-logo { width: 100px; height: 100px; border: 2px solid #879BF0; border-radius: 50% 0 50% 0; display: flex; justify-content: center; align-items: center; margin-bottom: 20px; transform: rotate(-45deg); box-shadow: 0 0 20px rgba(135, 155, 240, 0.5); }
         .union-logo .checkmark { font-size: 60px; color: #879BF0; transform: rotate(45deg); }
@@ -478,7 +454,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupTrashDragDrop();
 });
 
-// TOUCH DND FIX
+// FIXED TOUCH DND
 let draggedItem = null;
 let touchGhost = null;
 
@@ -488,7 +464,9 @@ function handleTouchStart(e) {
     if(!id) return;
     draggedItem = id;
     
+    // Create Ghost
     touchGhost = target.cloneNode(true);
+    touchGhost.id = "dragged-ghost-avatar"; // Add ID for forced removal
     touchGhost.style.position = 'fixed';
     touchGhost.style.opacity = '0.7';
     touchGhost.style.pointerEvents = 'none';
@@ -520,21 +498,26 @@ function handleTouchMove(e) {
 }
 
 function handleTouchEnd(e) {
-    // 1. CLEAR UI FIRST to avoid ghosting
-    if(touchGhost && touchGhost.parentNode) document.body.removeChild(touchGhost);
+    // 1. Remove the ghost immediately from DOM
+    const existingGhost = document.getElementById("dragged-ghost-avatar");
+    if (existingGhost) {
+        existingGhost.remove();
+    }
     touchGhost = null;
-    document.getElementById('profile-trash-target').classList.remove('trash-hover');
-
-    // 2. LOGIC
-    if(!draggedItem) return;
+    
     const trash = document.getElementById('profile-trash-target');
+    trash.classList.remove('trash-hover');
+
+    // 2. Logic
+    if(!draggedItem) return;
     const trashRect = trash.getBoundingClientRect();
     const touch = e.changedTouches[0];
     
+    // Check if dropped inside trash bounds
     if (touch.clientX >= trashRect.left && touch.clientX <= trashRect.right && 
         touch.clientY >= trashRect.top && touch.clientY <= trashRect.bottom) {
         
-        // Small delay to ensure UI thread is clear of ghost before alert
+        // Wait 50ms to ensure UI has repainted without the ghost
         setTimeout(() => {
             deleteUserById(parseInt(draggedItem));
             draggedItem = null;
@@ -616,7 +599,6 @@ function startEditUserFlow() {
     document.getElementById('user-back-btn').style.display = 'block';
     document.getElementById('user-back-btn').onclick = () => navigateTo('profile-screen');
     document.querySelector('#add-user-screen .btn-secondary').style.display = 'block';
-    // No Delete Button here anymore, moved to drag drop
     navigateTo('add-user-screen');
 }
 
