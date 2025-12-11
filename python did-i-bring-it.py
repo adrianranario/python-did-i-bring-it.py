@@ -195,13 +195,12 @@ html_code = """
             flex-shrink: 0;
         }
 
-        /* Standard Swipe Actions (Behind) */
         .list-item-actions {
             position: absolute;
             top: 0;
             right: 0;
             height: 100%;
-            width: 160px; 
+            width: 160px; /* Space for 2 buttons */
             display: flex;
             z-index: 1;
         }
@@ -220,22 +219,6 @@ html_code = """
         .action-btn.unarchive { background-color: var(--success-color); }
         .action-btn.delete { background-color: var(--danger-color); border-radius: 0 20px 20px 0; }
 
-        /* VISIBLE Actions for Past Items (Front) */
-        .past-action-btn {
-            background: none; 
-            border: none; 
-            cursor: pointer;
-            padding: 8px; 
-            margin-left: 5px; 
-            display: flex; 
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: background 0.2s;
-        }
-        .past-action-btn:active { background-color: rgba(0,0,0,0.05); }
-        .past-action-btn span { font-size: 22px; }
-
         .list-item-content {
             position: relative;
             z-index: 2;
@@ -253,7 +236,7 @@ html_code = """
         .list-text { font-weight: 600; flex-grow: 1; margin-left: 15px; }
         
         /* Past Items Style */
-        .list-item-wrapper.past-item .list-item-content { opacity: 0.8; background: #E8E8E8; border-color: #aaa; }
+        .list-item-wrapper.past-item .list-item-content { opacity: 0.6; background: #E0E0E0; border-color: #aaa; }
 
         .switch-accounts-section { width: 100%; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 20px; margin-top: 10px; text-align: center; }
         .users-row { display: flex; justify-content: center; gap: 15px; margin-top: 10px; flex-wrap: wrap; }
@@ -522,49 +505,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderApp();
 });
 
-// TOUCH DND FIX: Ghost element handling
-let draggedItem = null;
-let touchGhost = null;
-
-function handleTouchStart(e) {
-    const target = e.currentTarget;
-    const id = target.dataset.userId;
-    if(!id) return;
-    draggedItem = id;
-    
-    touchGhost = target.cloneNode(true);
-    touchGhost.id = "dragged-ghost-avatar"; 
-    touchGhost.style.position = 'fixed';
-    touchGhost.style.opacity = '0.9';
-    touchGhost.style.pointerEvents = 'none';
-    touchGhost.style.zIndex = '9999';
-    touchGhost.style.width = '70px'; 
-    touchGhost.style.height = '70px';
-    touchGhost.style.borderRadius = '50%';
-    touchGhost.style.border = '2px solid white';
-    touchGhost.style.boxShadow = '0 10px 20px rgba(0,0,0,0.3)';
-    
-    const touch = e.touches[0];
-    touchGhost.style.left = (touch.clientX - 35) + 'px';
-    touchGhost.style.top = (touch.clientY - 35) + 'px';
-    document.body.appendChild(touchGhost);
-}
-
-function handleTouchMove(e) {
-    if(!touchGhost) return;
-    e.preventDefault(); 
-    const touch = e.touches[0];
-    touchGhost.style.left = (touch.clientX - 35) + 'px';
-    touchGhost.style.top = (touch.clientY - 35) + 'px';
-}
-
-function handleTouchEnd(e) {
-    const existingGhost = document.getElementById("dragged-ghost-avatar");
-    if (existingGhost) existingGhost.remove();
-    touchGhost = null;
-    draggedItem = null;
-}
-
 // ... APP LOGIC ...
 function formatTime(timeStr) {
     if (!timeStr || timeStr === 'All Day') return 'All Day';
@@ -694,32 +634,14 @@ function updateProfileDisplay() {
         const div = document.createElement('div');
         div.className = `small-user-avatar ${u.id === activeUserId ? 'active-user' : ''}`;
         div.innerHTML = `<img src="${u.avatar}">`;
-        div.dataset.userId = u.id; 
-        
         div.onclick = () => {
             activeUserId = u.id;
             updateProfileDisplay();
             renderApp(); 
             navigateTo('home-screen');
         };
-        // Removed DND logic for users since we have a button now
         otherUsersContainer.appendChild(div);
     });
-}
-
-function setupTrashDragDrop() {
-   // Replaced with button, keeping empty for compatibility
-}
-
-function deleteUserById(id) {
-    if(users.length <= 1) { alert("Cannot delete the only user."); return; }
-    if(confirm("Delete this user and their data?")) {
-        checklists = checklists.filter(item => item.userId !== id);
-        users = users.filter(u => u.id !== id);
-        if(activeUserId === id) activeUserId = users[0].id;
-        updateProfileDisplay();
-        renderApp();
-    }
 }
 
 function deleteCurrentUser() {
@@ -835,85 +757,58 @@ function renderApp() {
         wrapper.className = 'list-item-wrapper';
         if(isPast && !isViewingArchived) wrapper.classList.add('past-item');
 
-        // VISIBLE ACTIONS FOR PAST ITEMS
-        if (isPast && !isViewingArchived) {
-            // No Swipe, Direct Buttons on front content
-            const content = document.createElement('div');
-            content.className = 'list-item-content';
-            content.style.cursor = "pointer";
-            
-            content.innerHTML = `
-                <div class="icon-box ${item.colorClass}"><span class="material-icons-round">${item.icon}</span></div>
-                <div class="list-text">${item.title}</div>
-                <div style="color: #666; font-size:0.8rem; margin-right:10px;">${formatDate(item.date)} ${progressStr}</div>
-                <div style="display:flex; margin-left:auto;">
-                    <button class="past-action-btn" style="color:var(--archive-color)" onclick="event.stopPropagation(); archiveList(${item.id})">
-                        <span class="material-icons-round">archive</span>
-                    </button>
-                    <button class="past-action-btn" style="color:var(--danger-color)" onclick="event.stopPropagation(); deleteList(${item.id})">
-                        <span class="material-icons-round">delete</span>
-                    </button>
-                </div>
+        const actions = document.createElement('div');
+        actions.className = 'list-item-actions';
+        
+        if (isViewingArchived) {
+            actions.innerHTML = `
+                <div class="action-btn unarchive" onclick="unarchiveList(${item.id})"><span class="material-icons-round">unarchive</span></div>
+                <div class="action-btn delete" onclick="deleteList(${item.id})"><span class="material-icons-round">delete</span></div>
             `;
-            content.onclick = () => openChecklist(item);
-            wrapper.appendChild(content);
-
         } else {
-            // STANDARD SWIPE BEHAVIOR
-            const actions = document.createElement('div');
-            actions.className = 'list-item-actions';
-            
-            if (isViewingArchived) {
-                actions.innerHTML = `
-                    <div class="action-btn unarchive" onclick="unarchiveList(${item.id})"><span class="material-icons-round">unarchive</span></div>
-                    <div class="action-btn delete" onclick="deleteList(${item.id})"><span class="material-icons-round">delete</span></div>
-                `;
-            } else {
-                // Active List: Archive AND Delete
-                actions.innerHTML = `
-                    <div class="action-btn archive" onclick="archiveList(${item.id})"><span class="material-icons-round">archive</span></div>
-                    <div class="action-btn delete" onclick="deleteList(${item.id})"><span class="material-icons-round">delete</span></div>
-                `;
-            }
-            
-            const content = document.createElement('div');
-            content.className = 'list-item-content';
-            content.innerHTML = `<div class="icon-box ${item.colorClass}"><span class="material-icons-round">${item.icon}</span></div><div class="list-text">${item.title}</div><div style="color: #666; font-size:0.8rem; margin-right:10px; display:flex; align-items:center;">${formatDate(item.date)} ${progressStr}</div><span class="material-icons-round arrow">chevron_right</span>`;
-            
-            content.onclick = (e) => {
-                if (wrapper.dataset.swiped === 'true') return;
-                openChecklist(item);
-            };
-
-            // Swipe Logic
-            let startX = 0;
-            let currentTranslate = 0;
-            const maxSwipe = -160; 
-
-            content.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; });
-            content.addEventListener('touchmove', (e) => {
-                const touch = e.touches[0];
-                const diff = touch.clientX - startX;
-                if (diff < 0 && diff > (maxSwipe*2)) { 
-                    currentTranslate = diff;
-                    content.style.transform = `translateX(${diff}px)`;
-                }
-            });
-            content.addEventListener('touchend', (e) => {
-                if (currentTranslate < (maxSwipe/2)) { 
-                    content.style.transform = `translateX(${maxSwipe}px)`;
-                    wrapper.dataset.swiped = 'true';
-                } else {
-                    content.style.transform = `translateX(0px)`;
-                    wrapper.dataset.swiped = 'false';
-                }
-                startX = 0; currentTranslate = 0;
-            });
-
-            wrapper.appendChild(actions);
-            wrapper.appendChild(content);
+            // Updated Logic: Always show Archive AND Delete options
+            actions.innerHTML = `
+                <div class="action-btn archive" onclick="archiveList(${item.id})"><span class="material-icons-round">archive</span></div>
+                <div class="action-btn delete" onclick="deleteList(${item.id})"><span class="material-icons-round">delete</span></div>
+            `;
         }
+        
+        const content = document.createElement('div');
+        content.className = 'list-item-content';
+        content.innerHTML = `<div class="icon-box ${item.colorClass}"><span class="material-icons-round">${item.icon}</span></div><div class="list-text">${item.title}</div><div style="color: #666; font-size:0.8rem; margin-right:10px; display:flex; align-items:center;">${formatDate(item.date)} ${progressStr}</div><span class="material-icons-round arrow">chevron_right</span>`;
+        
+        content.onclick = (e) => {
+            if (wrapper.dataset.swiped === 'true') return;
+            openChecklist(item);
+        };
 
+        // Swipe Logic
+        let startX = 0;
+        let currentTranslate = 0;
+        const maxSwipe = -160; 
+
+        content.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; });
+        content.addEventListener('touchmove', (e) => {
+            const touch = e.touches[0];
+            const diff = touch.clientX - startX;
+            if (diff < 0 && diff > (maxSwipe*2)) { 
+                currentTranslate = diff;
+                content.style.transform = `translateX(${diff}px)`;
+            }
+        });
+        content.addEventListener('touchend', (e) => {
+            if (currentTranslate < (maxSwipe/2)) { 
+                content.style.transform = `translateX(${maxSwipe}px)`;
+                wrapper.dataset.swiped = 'true';
+            } else {
+                content.style.transform = `translateX(0px)`;
+                wrapper.dataset.swiped = 'false';
+            }
+            startX = 0; currentTranslate = 0;
+        });
+
+        wrapper.appendChild(actions);
+        wrapper.appendChild(content);
         listsContainer.appendChild(wrapper);
     });
 }
@@ -985,10 +880,12 @@ function updateChecklistUI(item) {
         } else {
             const label = document.createElement('label');
             label.className = `checkbox-container ${obj.isChecked ? 'checked' : ''}`;
+            
             const input = document.createElement('input');
             input.type = 'checkbox';
             input.checked = obj.isChecked;
             input.onchange = () => toggleCheckItem(item.id, idx);
+            
             label.innerHTML = `<span class="checkmark-box"></span><span class="text">${obj.text}</span>`;
             label.prepend(input);
             container.appendChild(label);
