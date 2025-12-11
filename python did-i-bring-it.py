@@ -355,6 +355,7 @@ html_code = """
                     <span class="chip-gray" id="current-time-display">--:--</span>
                 </div>
             </div>
+            
             <div class="reminders-section">
                 <h4>Reminders:</h4>
                 <div id="home-reminders-list"></div>
@@ -490,11 +491,7 @@ document.addEventListener('DOMContentLoaded', () => {
         splash.style.opacity = '0';
         setTimeout(() => {
             splash.style.display = 'none';
-            if (users.length === 0) {
-                startAddUserFlow(); 
-            } else {
-                navigateTo('home-screen');
-            }
+            if (users.length === 0) startAddUserFlow(); else navigateTo('home-screen');
         }, 500);
     }, 2000);
     renderCategoryGrid();
@@ -502,7 +499,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderApp();
 });
 
-// TOUCH DND FIX: Ghost element handling (Only for user avatars if needed, but deleted per request. Keeping logic clean just in case)
+// TOUCH DND FIX: Ghost element handling (User Avatars)
 let draggedItem = null;
 let touchGhost = null;
 
@@ -674,12 +671,14 @@ function updateProfileDisplay() {
         const div = document.createElement('div');
         div.className = `small-user-avatar ${u.id === activeUserId ? 'active-user' : ''}`;
         div.innerHTML = `<img src="${u.avatar}">`;
+        div.dataset.userId = u.id; 
         div.onclick = () => {
             activeUserId = u.id;
             updateProfileDisplay();
             renderApp(); 
             navigateTo('home-screen');
         };
+        // DND for user delete removed
         otherUsersContainer.appendChild(div);
     });
 }
@@ -720,17 +719,18 @@ function renderCalendar() {
         dayDiv.className = 'day';
         dayDiv.innerText = d;
         const dateString = `${displayedYear}-${String(displayedMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        
+        // Markers
         if (currentDateAPI.getDate() === d && currentDateAPI.getMonth() === displayedMonth && currentDateAPI.getFullYear() === displayedYear) dayDiv.classList.add('today-marker');
         if(userLists.some(item => item.date === dateString)) dayDiv.classList.add('has-event');
-        
         if(selectedDateFilter === dateString) dayDiv.classList.add('selected-date-marker');
 
+        // Click Logic
         dayDiv.onclick = () => {
-            // TOGGLE FILTER
             if(selectedDateFilter === dateString) {
-                selectedDateFilter = null; // Clear filter
+                selectedDateFilter = null; // Toggle Off
             } else {
-                selectedDateFilter = dateString; // Set filter
+                selectedDateFilter = dateString; // Toggle On
             }
             renderCalendar();
             renderApp();
@@ -766,6 +766,7 @@ function renderApp() {
     pastLists.sort((a, b) => new Date(b.date) - new Date(a.date));
     const finalLists = [...futureLists, ...pastLists];
 
+    // --- RENDER ---
     finalLists.forEach(item => {
         const total = item.items.length;
         const checkedCount = item.items.filter(i => i.isChecked).length;
@@ -774,7 +775,7 @@ function renderApp() {
         const itemDate = new Date(item.date);
         const isPast = itemDate < today;
 
-        // HOME
+        // HOME (No Archive view here)
         if(!isViewingArchived) {
             const card = document.createElement('div');
             card.className = 'reminder-card';
@@ -784,7 +785,7 @@ function renderApp() {
             homeContainer.appendChild(card);
         }
         
-        // LISTS (Swipeable for ALL)
+        // LISTS (Swipeable for ALL items now)
         const wrapper = document.createElement('div');
         wrapper.className = 'list-item-wrapper';
         if(isPast && !isViewingArchived) wrapper.classList.add('past-item');
@@ -798,7 +799,7 @@ function renderApp() {
                 <div class="action-btn delete" onclick="deleteList(${item.id})"><span class="material-icons-round">delete</span></div>
             `;
         } else {
-            // ALWAYS SHOW ARCHIVE AND DELETE
+            // Archive + Delete available for ALL items via swipe
             actions.innerHTML = `
                 <div class="action-btn archive" onclick="archiveList(${item.id})"><span class="material-icons-round">archive</span></div>
                 <div class="action-btn delete" onclick="deleteList(${item.id})"><span class="material-icons-round">delete</span></div>
