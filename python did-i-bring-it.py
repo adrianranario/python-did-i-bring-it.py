@@ -40,6 +40,7 @@ html_code = """
             --font-poppins: 'Poppins', sans-serif;
             --danger-color: #e53935;
             --archive-color: #FF9800;
+            --success-color: #4CAF50;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -52,7 +53,7 @@ html_code = """
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden; /* Prevent body scroll */
+            overflow: hidden;
             margin: 0;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
@@ -65,7 +66,7 @@ html_code = """
             max-height: 90vh;
             background-color: var(--bg-color);
             position: relative;
-            overflow: hidden; /* Prevent viewport scroll, handle inner scroll */
+            overflow: hidden;
             box-shadow: 0 0 50px rgba(0,0,0,0.5);
             display: flex;
             flex-direction: column;
@@ -78,27 +79,23 @@ html_code = """
         .screen { display: none; flex-direction: column; width: 100%; height: 100%; background-color: var(--bg-color); animation: fadeIn 0.3s ease-in-out; }
         .screen.active { display: flex; }
         
-        /* SCROLLABLE AREAS */
-        .scrollable-content { 
-            flex-grow: 1; 
-            overflow-y: auto; /* Only this scrolls */
-            width: 100%; 
-            padding: 0 20px 20px 20px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-        }
+        .scrollable-content { flex-grow: 1; overflow-y: auto; width: 100%; padding: 0 20px 20px 20px; display: flex; flex-direction: column; align-items: center; }
         .scrollable-content::-webkit-scrollbar { display: none; }
         
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* HEADER */
         .app-bar { display: flex; justify-content: space-between; align-items: center; padding: 20px; flex-shrink: 0; background: transparent; z-index: 10; min-height: 70px; }
         .app-bar h2 { font-size: 1.25rem; font-weight: 600; color: #000; letter-spacing: 0.5px; }
         .icon-btn { background: none; border: none; font-size: 1rem; display: flex; align-items: center; cursor: pointer; color: var(--text-dark); }
 
         .content-center { display: flex; flex-direction: column; align-items: center; width: 100%; }
+        .profile-footer { margin-top: auto; width: 100%; display: flex; flex-direction: column; align-items: center; padding-bottom: 20px; flex-shrink: 0; }
         
+        .trash-container { display: flex; justify-content: center; align-items: center; padding: 15px; transition: transform 0.2s; }
+        .trash-container.trash-hover .trash-icon { color: #ff5252; transform: scale(1.4); transition: 0.2s; }
+        .trash-icon { font-size: 35px; color: #aaa; transition: color 0.3s; }
+        .hint-text { text-align: center; color: #888; font-size: 0.8rem; margin-bottom: 5px; }
+
         /* AVATARS */
         .avatar-large-wrapper { margin-top: 10px; margin-bottom: 20px; display: flex; justify-content: center; width: 100%; }
         .avatar-large, .avatar-large-circle {
@@ -121,30 +118,22 @@ html_code = """
         .avatar-option.selected { border-color: #fff; box-shadow: 0 0 0 3px var(--primary-blue); }
         .avatar-option img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* INPUTS */
         .input-group { width: 100%; display: flex; justify-content: center; margin-bottom: 10px; }
         .underline-input { 
             background: transparent; border: none; border-bottom: 2px solid var(--text-dark); 
-            text-align: center; font-size: 1.5rem; padding: 10px; width: 80%; margin-bottom: 20px; 
-            outline: none; font-weight: 500; font-family: var(--font-poppins);
+            text-align: center; font-size: 1.5rem; padding: 10px; width: 80%; 
+            margin-bottom: 20px; outline: none; font-weight: 500; font-family: var(--font-poppins);
         }
+
         .form-container { width: 100%; max-width: 340px; display: flex; flex-direction: column; gap: 15px; }
         .form-container label { font-size: 0.95rem; font-weight: 500; color: #444; display: block; margin-bottom: 5px; margin-top: 5px; text-align: left; width: 100%; }
         .input-field { width: 100%; padding: 12px 15px; border-radius: 12px; border: 1px solid #ccc; background: #fff; font-size: 1rem; outline: none; font-family: var(--font-poppins); }
 
-        /* BUTTONS */
         .button-row { display: flex; gap: 20px; justify-content: center; width: 100%; margin-top: 20px; margin-bottom: 20px; flex-shrink: 0; }
         .btn-primary { background-color: var(--button-blue); padding: 12px 30px; border-radius: 12px; border: none; cursor: pointer; font-weight: 600; font-size: 1rem; width: 130px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .btn-secondary { background-color: #fff; padding: 12px 30px; border-radius: 12px; border: none; cursor: pointer; font-weight: 500; font-size: 1rem; width: 130px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .btn-icon-small { background: var(--primary-blue); color: white; border: none; border-radius: 8px; width: 50px; cursor: pointer; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
-        
-        /* DELETE ACCOUNT BUTTON */
-        .btn-delete-account { 
-            margin-top: 20px; color: white; background-color: var(--danger-color); 
-            border: none; border-radius: 12px; padding: 12px 30px; 
-            font-weight: 600; cursor: pointer; font-size: 1rem; width: 100%; max-width: 200px;
-            box-shadow: 0 4px 10px rgba(229, 57, 53, 0.3);
-        }
+        .btn-text-danger { margin-top: 10px; color: var(--danger-color); background: none; border: none; font-weight: 600; cursor: pointer; font-size: 0.9rem; margin-bottom: 30px; }
         .btn-done-pill { margin-top: 30px; background: #D1C4E9; width: 150px; padding: 15px; border: none; border-radius: 30px; font-size: 1.1rem; font-weight: 600; display: block; margin-left: auto; margin-right: auto; cursor: pointer; }
 
         /* CALENDAR */
@@ -152,46 +141,26 @@ html_code = """
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .calendar-days, .calendar-grid-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; margin-bottom: 15px; }
         .day { font-size: 1rem; display: flex; justify-content: center; align-items: center; border-radius: 50%; aspect-ratio: 1 / 1; width: 100%; cursor: pointer; }
+        
         .has-event { background-color: #E3F2FD; color: var(--primary-blue); font-weight: 700; position: relative; }
         .has-event::after { content: ''; position: absolute; bottom: 5px; width: 4px; height: 4px; background: var(--primary-blue); border-radius: 50%; }
+        
         .today-marker { border: 2px solid var(--primary-blue); color: var(--primary-blue); font-weight: bold; }
+        
+        /* New: Selected Date Filter */
+        .selected-date-marker { background-color: var(--primary-blue) !important; color: white !important; font-weight: bold; }
+        .selected-date-marker::after { background: white !important; }
+
         .day-name { font-size: 0.75rem; color: #bbb; font-weight: 600; }
         .time-row { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f0f0f0; padding-top: 15px; width: 100%; }
         .chip-gray { background: #eee; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 500; }
 
-        /* REMINDERS */
         .reminders-section { width: 100%; margin-bottom: 20px; }
         .reminder-card { background: rgba(255, 255, 255, 0.7); border: 2px solid #fff; border-radius: 25px; padding: 10px 15px; display: flex; align-items: center; margin-bottom: 12px; height: 70px; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.02); width: 100%; }
         .rem-title { font-weight: 600; margin-right: auto; margin-left: 10px; color: var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .rem-date, .rem-time { background: #CFD8DC; padding: 5px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 500; margin-left: 5px; white-space: nowrap; flex-shrink: 0;}
 
-        /* ICONS */
-        .icon-box { width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
-        .icon-box span { color: white; font-size: 24px; }
-        
-        div.category-option.bg-purple { background-color: #D1C4E9 !important; } 
-        div.category-option.bg-orange { background-color: #FFE0B2 !important; }
-        div.category-option.bg-green { background-color: #C8E6C9 !important; }
-        div.category-option.bg-blue { background-color: #BBDEFB !important; }
-        div.category-option.bg-gray { background-color: #90A4AE !important; }
-        div.category-option.bg-red { background-color: #ffcdd2 !important; }
-        div.category-option.bg-teal { background-color: #b2dfdb !important; }
-        
-        .icon-box.bg-purple { background-color: #D1C4E9; } .icon-box.bg-purple span { color: #5E35B1; }
-        .icon-box.bg-orange { background-color: #FFE0B2; } .icon-box.bg-orange span { color: #FB8C00; }
-        .icon-box.bg-green { background-color: #C8E6C9; } .icon-box.bg-green span { color: #43A047; }
-        .icon-box.bg-blue { background-color: #BBDEFB; } .icon-box.bg-blue span { color: #1976D2; }
-        .icon-box.bg-gray { background-color: #90A4AE; } .icon-box.bg-gray span { color: #37474F; }
-        .icon-box.bg-red { background-color: #ffcdd2; } .icon-box.bg-red span { color: #c62828; }
-        .icon-box.bg-teal { background-color: #b2dfdb; } .icon-box.bg-teal span { color: #00695c; }
-
-        .category-label { font-size: 0.9rem; font-weight: 500; color: #666; margin-bottom: 5px; align-self: flex-start; margin-left: 5px; }
-        .category-grid { display: flex; gap: 12px; overflow-x: auto; padding: 10px 5px; width: 100%; margin-bottom: 10px; scrollbar-width: none; }
-        .category-option { width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; flex-shrink: 0; border: 2px solid transparent; transition: transform 0.2s; }
-        .category-option.selected { border-color: #2A4298; transform: scale(1.1); box-shadow: 0 4px 8px rgba(0,0,0,0.2); border-width: 3px; }
-        .category-option span { color: white; font-size: 26px; }
-
-        /* LISTS (SWIPEABLE) */
+        /* LIST ITEM & SWIPE */
         .list-container { width: 100%; display: flex; flex-direction: column; }
         
         .list-item-wrapper {
@@ -225,6 +194,7 @@ html_code = """
             cursor: pointer;
         }
         .action-btn.archive { background-color: var(--archive-color); }
+        .action-btn.unarchive { background-color: var(--success-color); }
         .action-btn.delete { background-color: var(--danger-color); border-radius: 0 20px 20px 0; }
 
         .list-item-content {
@@ -242,19 +212,47 @@ html_code = """
             cursor: pointer;
         }
         .list-text { font-weight: 600; flex-grow: 1; margin-left: 15px; }
+        
+        /* Past Items Style */
+        .list-item-wrapper.past-item .list-item-content { opacity: 0.6; background: #E0E0E0; border-color: #aaa; }
 
-        /* SWITCH ACCOUNTS */
+        /* ICONS */
+        .icon-box { width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
+        .icon-box span { color: white; font-size: 24px; }
+        
+        /* Category Colors */
+        div.category-option.bg-purple { background-color: #D1C4E9 !important; } 
+        div.category-option.bg-orange { background-color: #FFE0B2 !important; }
+        div.category-option.bg-green { background-color: #C8E6C9 !important; }
+        div.category-option.bg-blue { background-color: #BBDEFB !important; }
+        div.category-option.bg-gray { background-color: #90A4AE !important; }
+        div.category-option.bg-red { background-color: #ffcdd2 !important; }
+        div.category-option.bg-teal { background-color: #b2dfdb !important; }
+        
+        .icon-box.bg-purple { background-color: #D1C4E9; } .icon-box.bg-purple span { color: #5E35B1; }
+        .icon-box.bg-orange { background-color: #FFE0B2; } .icon-box.bg-orange span { color: #FB8C00; }
+        .icon-box.bg-green { background-color: #C8E6C9; } .icon-box.bg-green span { color: #43A047; }
+        .icon-box.bg-blue { background-color: #BBDEFB; } .icon-box.bg-blue span { color: #1976D2; }
+        .icon-box.bg-gray { background-color: #90A4AE; } .icon-box.bg-gray span { color: #37474F; }
+        .icon-box.bg-red { background-color: #ffcdd2; } .icon-box.bg-red span { color: #c62828; }
+        .icon-box.bg-teal { background-color: #b2dfdb; } .icon-box.bg-teal span { color: #00695c; }
+
+        .category-label { font-size: 0.9rem; font-weight: 500; color: #666; margin-bottom: 5px; align-self: flex-start; margin-left: 5px; }
+        .category-grid { display: flex; gap: 12px; overflow-x: auto; padding: 10px 5px; width: 100%; margin-bottom: 10px; scrollbar-width: none; }
+        .category-option { width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; flex-shrink: 0; border: 2px solid transparent; transition: transform 0.2s; }
+        .category-option.selected { border-color: #2A4298; transform: scale(1.1); box-shadow: 0 4px 8px rgba(0,0,0,0.2); border-width: 3px; }
+        .category-option span { color: white; font-size: 26px; }
+
         .switch-accounts-section { width: 100%; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 20px; margin-top: 10px; text-align: center; }
         .users-row { display: flex; justify-content: center; gap: 15px; margin-top: 10px; flex-wrap: wrap; }
         
-        .small-user-avatar { width: 50px; height: 50px; border-radius: 50%; overflow: hidden; cursor: pointer; border: 2px solid transparent; }
+        .small-user-avatar { width: 50px; height: 50px; border-radius: 50%; overflow: hidden; cursor: grab; border: 2px solid transparent; touch-action: none; }
         .small-user-avatar.active-user { border-color: var(--primary-blue); box-shadow: 0 0 10px rgba(42, 66, 152, 0.3); }
         .small-user-avatar img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
         
         .profile-icon-mini { width: 45px !important; height: 45px !important; border-radius: 50%; background: #87CEEB; overflow: hidden; cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-shrink: 0; }
         .profile-icon-mini img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-        /* CHECKLIST CONTENT */
         .checklist-content { padding: 20px 40px; width: 100%; }
         .big-title { font-size: 2.5rem; font-weight: 600; margin-bottom: 10px; }
         .tags-row { display: flex; gap: 10px; margin-bottom: 40px; }
@@ -267,7 +265,6 @@ html_code = """
         .checkbox-container input:checked ~ .checkmark-box { background-color: var(--primary-blue); border-color: var(--primary-blue); }
         .checkbox-container input:checked ~ .checkmark-box:after { display: block; }
         .checkmark-box:after { content: ""; position: absolute; display: none; left: 7px; top: 3px; width: 6px; height: 12px; border: solid white; border-width: 0 3px 3px 0; transform: rotate(45deg); }
-        
         .checkbox-container.checked .text { text-decoration: line-through; color: #888; }
         .text { flex-grow: 1; word-break: break-word; color: #333; }
         .delete-item-icon { color: var(--danger-color); font-size: 1.8rem; cursor: pointer; margin-left: auto; padding: 5px; }
@@ -276,11 +273,12 @@ html_code = """
         .temp-tag { background: #fff; padding: 5px 10px; border-radius: 15px; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; border: 1px solid #ccc; margin-right: 5px; margin-bottom: 5px; }
         .temp-tags-container { display: flex; flex-wrap: wrap; margin-top: 10px; width: 100%; }
 
-        #splash-screen { background-color: #2A4298; z-index: 9999; display: flex; align-items: center; justify-content: center; position: absolute; top:0; left:0; width: 100%; height: 100%; }
-        .union-logo { width: 100px; height: 100px; border: 2px solid #879BF0; border-radius: 50% 0 50% 0; display: flex; justify-content: center; align-items: center; margin-bottom: 20px; transform: rotate(-45deg); box-shadow: 0 0 20px rgba(135, 155, 240, 0.5); }
-        .union-logo .checkmark { font-size: 60px; color: #879BF0; transform: rotate(45deg); }
-        .logo-container { display: flex; flex-direction: column; align-items: center; color: white; }
-        .logo-container h1 { font-weight: 300; letter-spacing: 3px; font-size: 1.5rem; }
+        /* SPLASH - MATCHED COLORS */
+        #splash-screen { background-color: var(--bg-color); z-index: 9999; display: flex; align-items: center; justify-content: center; position: absolute; top:0; left:0; width: 100%; height: 100%; }
+        .union-logo { width: 100px; height: 100px; border: 2px solid var(--primary-blue); border-radius: 50% 0 50% 0; display: flex; justify-content: center; align-items: center; margin-bottom: 20px; transform: rotate(-45deg); box-shadow: 0 0 20px rgba(135, 155, 240, 0.5); }
+        .union-logo .checkmark { font-size: 60px; color: var(--primary-blue); transform: rotate(45deg); }
+        .logo-container { display: flex; flex-direction: column; align-items: center; color: var(--primary-blue); }
+        .logo-container h1 { font-weight: 300; letter-spacing: 3px; font-size: 1.5rem; color: var(--primary-blue); }
     </style>
 </head>
 <body>
@@ -334,9 +332,11 @@ html_code = """
                     <button class="btn-secondary" onclick="navigateTo('home-screen')">Back</button>
                 </div>
                 
-                <!-- DELETE ACCOUNT BUTTON -->
                 <button class="btn-delete-account" onclick="deleteCurrentUser()">Delete Account</button>
             </div>
+        </div>
+        <div class="profile-footer">
+            <p class="hint-text">Drag avatar to delete (disabled, use button)</p>
         </div>
     </div>
 
@@ -364,6 +364,10 @@ html_code = """
                     <span class="chip-gray" id="current-time-display">--:--</span>
                 </div>
             </div>
+            
+            <!-- Clear Filter Button (Only shows if filtering) -->
+            <div id="calendar-clear-filter" style="display:none; margin-bottom:10px; cursor:pointer; color: #2A4298; font-weight:600;" onclick="clearDateFilter()">Show All</div>
+
             <div class="reminders-section">
                 <h4>Reminders:</h4>
                 <div id="home-reminders-list"></div>
@@ -375,11 +379,18 @@ html_code = """
     <div id="lists-screen" class="screen">
         <div class="app-bar">
             <button class="icon-btn" onclick="navigateTo('home-screen')"><span class="material-icons-round">arrow_back_ios</span> Home</button>
-            <h2 style="flex-grow: 1; text-align: center; margin-right: 60px;">Lists</h2>
-            <button class="icon-btn" onclick="navigateTo('add-list-screen')"><span class="material-icons-round" style="font-size: 28px;">add</span></button>
+            <h2 id="lists-header-title" style="flex-grow: 1; text-align: center;">Lists</h2>
+            <div style="display:flex; gap:10px;">
+                <!-- Archive Toggle Icon -->
+                <button class="icon-btn" onclick="toggleArchiveView()"><span class="material-icons-round" id="archive-toggle-icon">folder_open</span></button>
+                <button class="icon-btn" onclick="navigateTo('add-list-screen')"><span class="material-icons-round" style="font-size: 28px;">add</span></button>
+            </div>
         </div>
         <div class="scrollable-content" style="padding: 0;">
             <div class="list-container" id="all-lists-container" style="padding: 20px;"></div>
+        </div>
+        <div class="profile-footer">
+            <p class="hint-text" id="lists-hint-text">Swipe left to Archive</p>
         </div>
     </div>
 
@@ -447,7 +458,7 @@ html_code = """
 </div>
 
 <script>
-// --- DATA INIT ---
+// --- STATE ---
 let users = [];
 let activeUserId = null;
 let tempUser = { name: "", avatar: "" };
@@ -460,6 +471,10 @@ let tempNewListItems = [];
 let currentEditingListId = null;
 let isEditMode = false;
 let selectedCategory = { icon: 'checklist', color: 'bg-blue' }; 
+
+// New State Variables
+let selectedDateFilter = null; // "YYYY-MM-DD"
+let isViewingArchived = false;
 
 const avatars = [
     "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix",
@@ -498,6 +513,8 @@ document.addEventListener('DOMContentLoaded', () => {
     updateProfileDisplay();
     renderApp();
 });
+
+// REMOVED TOUCH DND LOGIC (Replaced by Delete Button)
 
 // ... APP LOGIC ...
 function formatTime(timeStr) {
@@ -542,6 +559,7 @@ function navigateTo(screenId) {
     document.getElementById(screenId).classList.add('active');
     if(screenId === 'home-screen') { renderCalendar(); updateProfileDisplay(); renderApp(); }
     if(screenId === 'profile-screen') { updateProfileDisplay(); }
+    if(screenId === 'lists-screen') { renderApp(); } // Re-render lists to ensure sort/archive state
 }
 
 function startAddUserFlow() {
@@ -627,7 +645,7 @@ function updateProfileDisplay() {
         const div = document.createElement('div');
         div.className = `small-user-avatar ${u.id === activeUserId ? 'active-user' : ''}`;
         div.innerHTML = `<img src="${u.avatar}">`;
-        // Removed Draggable attributes for user avatars
+        
         div.onclick = () => {
             activeUserId = u.id;
             updateProfileDisplay();
@@ -643,13 +661,14 @@ function deleteCurrentUser() {
     if(confirm("Delete this user and their data?")) {
         checklists = checklists.filter(item => item.userId !== activeUserId);
         users = users.filter(u => u.id !== activeUserId);
-        // Switch to next available user
         activeUserId = users[0].id;
         updateProfileDisplay();
         renderApp();
         navigateTo('home-screen');
     }
 }
+
+// --- CALENDAR & LISTS ---
 
 function changeMonth(dir) {
     displayedMonth += dir;
@@ -664,8 +683,11 @@ function renderCalendar() {
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     header.innerText = `${monthNames[displayedMonth]} ${displayedYear}`;
     grid.innerHTML = '';
+    
     const firstDayIndex = new Date(displayedYear, displayedMonth, 1).getDay();
     const daysInMonth = new Date(displayedYear, displayedMonth + 1, 0).getDate();
+    
+    // Only check NON-archived lists for dots
     const userLists = activeUserId ? checklists.filter(c => c.userId === activeUserId && !c.isArchived) : [];
 
     for(let i=0; i<firstDayIndex; i++) grid.appendChild(Object.assign(document.createElement('div'), {className: 'day empty'}));
@@ -675,10 +697,44 @@ function renderCalendar() {
         dayDiv.className = 'day';
         dayDiv.innerText = d;
         const dateString = `${displayedYear}-${String(displayedMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-        if (currentDateAPI.getDate() === d && currentDateAPI.getMonth() === displayedMonth && currentDateAPI.getFullYear() === displayedYear) dayDiv.classList.add('today-marker');
-        if(userLists.some(item => item.date === dateString)) dayDiv.classList.add('has-event');
+        
+        // Today Marker
+        if (currentDateAPI.getDate() === d && currentDateAPI.getMonth() === displayedMonth && currentDateAPI.getFullYear() === displayedYear) {
+            dayDiv.classList.add('today-marker');
+        }
+        
+        // Event Dot
+        if(userLists.some(item => item.date === dateString)) {
+            dayDiv.classList.add('has-event');
+        }
+        
+        // Selected Filter Logic
+        if(selectedDateFilter === dateString) {
+            dayDiv.classList.add('selected-date-marker');
+        }
+
+        // Click Event
+        dayDiv.onclick = () => {
+            if(selectedDateFilter === dateString) {
+                selectedDateFilter = null; // Toggle Off
+                document.getElementById('calendar-clear-filter').style.display = 'none';
+            } else {
+                selectedDateFilter = dateString; // Toggle On
+                document.getElementById('calendar-clear-filter').style.display = 'block';
+            }
+            renderCalendar(); // Re-render to update classes
+            renderApp();      // Re-render lists
+        };
+
         grid.appendChild(dayDiv);
     }
+}
+
+function clearDateFilter() {
+    selectedDateFilter = null;
+    document.getElementById('calendar-clear-filter').style.display = 'none';
+    renderCalendar();
+    renderApp();
 }
 
 function renderApp() {
@@ -686,31 +742,80 @@ function renderApp() {
     const listsContainer = document.getElementById('all-lists-container');
     homeContainer.innerHTML = ''; listsContainer.innerHTML = '';
     if (!activeUserId) return; 
-    const userLists = checklists.filter(c => c.userId === activeUserId && !c.isArchived);
 
-    userLists.forEach(item => {
-        // Data for progress
+    // --- FILTER & SORT LOGIC ---
+    // 1. Base Filter (User + Archive Status)
+    let filteredLists = checklists.filter(c => c.userId === activeUserId && c.isArchived === isViewingArchived);
+
+    // 2. Date Filter (If active) - Only applies if NOT viewing archives
+    if (selectedDateFilter && !isViewingArchived) {
+        filteredLists = filteredLists.filter(c => c.date === selectedDateFilter);
+    }
+
+    // 3. Sorting (Future/Today Top, Past Bottom)
+    const today = new Date();
+    today.setHours(0,0,0,0); // Midnight today
+
+    const futureLists = [];
+    const pastLists = [];
+
+    filteredLists.forEach(item => {
+        const itemDate = new Date(item.date);
+        if (itemDate >= today) {
+            futureLists.push(item);
+        } else {
+            pastLists.push(item);
+        }
+    });
+
+    // Sort Future: Ascending (Soonest first)
+    futureLists.sort((a, b) => new Date(a.date) - new Date(b.date));
+    
+    // Sort Past: Descending (Most recent past first)
+    pastLists.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    // Combine
+    const finalLists = [...futureLists, ...pastLists];
+
+    // --- RENDER ---
+    finalLists.forEach(item => {
         const total = item.items.length;
         const checkedCount = item.items.filter(i => i.isChecked).length;
         const progressStr = total > 0 ? `${checkedCount}/${total}` : '';
+        const itemDate = new Date(item.date);
+        const isPast = itemDate < today;
 
-        // Home Card
-        const card = document.createElement('div');
-        card.className = 'reminder-card';
-        card.onclick = () => openChecklist(item);
-        card.innerHTML = `<div class="icon-box ${item.colorClass}"><span class="material-icons-round">${item.icon}</span></div><span class="rem-title">${item.title}</span><div style="display:flex; align-items:center;"><span class="rem-date">${formatDate(item.date)}</span><span class="rem-time">${formatTime(item.time)}</span><span class="rem-progress" style="margin-left:5px; font-size:0.75rem; color:#666; font-weight:600;">${progressStr}</span></div>`;
-        homeContainer.appendChild(card);
+        // --- HOME SCREEN (Only Non-Archived) ---
+        if(!isViewingArchived) {
+            const card = document.createElement('div');
+            card.className = 'reminder-card';
+            if(isPast) card.style.opacity = '0.7'; // Visually indicate past
+            
+            card.onclick = () => openChecklist(item);
+            card.innerHTML = `<div class="icon-box ${item.colorClass}"><span class="material-icons-round">${item.icon}</span></div><span class="rem-title">${item.title}</span><div style="display:flex; align-items:center;"><span class="rem-date">${formatDate(item.date)}</span><span class="rem-time">${formatTime(item.time)}</span><span class="rem-progress" style="margin-left:5px; font-size:0.75rem; color:#666; font-weight:600;">${progressStr}</span></div>`;
+            homeContainer.appendChild(card);
+        }
         
-        // List Item (Swipeable)
+        // --- LISTS SCREEN (Swipeable) ---
         const wrapper = document.createElement('div');
         wrapper.className = 'list-item-wrapper';
-        
+        if(isPast && !isViewingArchived) wrapper.classList.add('past-item');
+
         const actions = document.createElement('div');
         actions.className = 'list-item-actions';
-        actions.innerHTML = `
-            <div class="action-btn archive" onclick="archiveList(${item.id})"><span class="material-icons-round">archive</span></div>
-            <div class="action-btn delete" onclick="deleteList(${item.id})"><span class="material-icons-round">delete</span></div>
-        `;
+        
+        if (isViewingArchived) {
+            // Archive View: Unarchive | Delete
+            actions.innerHTML = `
+                <div class="action-btn unarchive" onclick="unarchiveList(${item.id})"><span class="material-icons-round">unarchive</span></div>
+                <div class="action-btn delete" onclick="deleteList(${item.id})"><span class="material-icons-round">delete</span></div>
+            `;
+        } else {
+            // Active View: Archive (Orange) only
+            actions.innerHTML = `
+                <div class="action-btn archive" style="width:100%; border-radius: 0 20px 20px 0;" onclick="archiveList(${item.id})"><span class="material-icons-round">archive</span></div>
+            `;
+        }
         
         const content = document.createElement('div');
         content.className = 'list-item-content';
@@ -724,18 +829,20 @@ function renderApp() {
         // Swipe Logic
         let startX = 0;
         let currentTranslate = 0;
+        const maxSwipe = isViewingArchived ? -160 : -80; // Archive view has 2 buttons, Active has 1
+
         content.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; });
         content.addEventListener('touchmove', (e) => {
             const touch = e.touches[0];
             const diff = touch.clientX - startX;
-            if (diff < 0 && diff > -160) { 
+            if (diff < 0 && diff > (maxSwipe*2)) { 
                 currentTranslate = diff;
                 content.style.transform = `translateX(${diff}px)`;
             }
         });
         content.addEventListener('touchend', (e) => {
-            if (currentTranslate < -80) { 
-                content.style.transform = `translateX(-160px)`;
+            if (currentTranslate < (maxSwipe/2)) { 
+                content.style.transform = `translateX(${maxSwipe}px)`;
                 wrapper.dataset.swiped = 'true';
             } else {
                 content.style.transform = `translateX(0px)`;
@@ -750,22 +857,54 @@ function renderApp() {
     });
 }
 
+// --- ARCHIVE LOGIC ---
+function toggleArchiveView() {
+    isViewingArchived = !isViewingArchived;
+    
+    // Update Header UI
+    const title = document.getElementById('lists-header-title');
+    const icon = document.getElementById('archive-toggle-icon');
+    const hint = document.getElementById('lists-hint-text');
+    
+    if(isViewingArchived) {
+        title.innerText = "Archived Lists";
+        icon.innerText = "folder"; // Filled icon
+        hint.innerText = "Swipe left to Restore or Delete";
+    } else {
+        title.innerText = "Lists";
+        icon.innerText = "folder_open"; // Outline icon
+        hint.innerText = "Swipe left to Archive";
+    }
+    
+    renderApp();
+}
+
 function archiveList(id) {
     const list = checklists.find(c => c.id === id);
     if(list) {
         list.isArchived = true;
+        renderApp();
+        renderCalendar(); // Remove dots from calendar
+    }
+}
+
+function unarchiveList(id) {
+    const list = checklists.find(c => c.id === id);
+    if(list) {
+        list.isArchived = false;
         renderApp();
         renderCalendar();
     }
 }
 
 function deleteList(id) {
-    if(confirm('Delete this list?')) {
+    if(confirm('Permanently delete this list?')) {
         checklists = checklists.filter(c => c.id !== id);
-        renderApp(); renderCalendar();
+        renderApp(); 
     }
 }
 
+// --- CHECKLIST & EDITING ---
 function openChecklist(item) {
     currentEditingListId = item.id;
     isEditMode = false;
@@ -818,7 +957,7 @@ function toggleCheckItem(listId, itemIndex) {
     if(list) {
         list.items[itemIndex].isChecked = !list.items[itemIndex].isChecked;
         updateChecklistUI(list);
-        renderApp(); // Update home progress
+        renderApp(); 
     }
 }
 
