@@ -235,8 +235,16 @@ html_code = """
         }
         .list-text { font-weight: 600; flex-grow: 1; margin-left: 15px; }
         
-        /* Past Items Style */
-        .list-item-wrapper.past-item .list-item-content { opacity: 0.6; background: #E0E0E0; border-color: #aaa; }
+        /* PAST ITEM CSS FIX: Make background solid so buttons don't show through */
+        .list-item-wrapper.past-item .list-item-content { 
+            background: #E8E8E8; /* Solid Grey */
+            border-color: #aaa; 
+            opacity: 1; /* Keep fully opaque container */
+        }
+        /* Dim children instead */
+        .list-item-wrapper.past-item .list-item-content > * {
+            opacity: 0.6;
+        }
 
         .switch-accounts-section { width: 100%; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 20px; margin-top: 10px; text-align: center; }
         .users-row { display: flex; justify-content: center; gap: 15px; margin-top: 10px; flex-wrap: wrap; }
@@ -922,12 +930,10 @@ function updateChecklistUI(item) {
         } else {
             const label = document.createElement('label');
             label.className = `checkbox-container ${obj.isChecked ? 'checked' : ''}`;
-            
             const input = document.createElement('input');
             input.type = 'checkbox';
             input.checked = obj.isChecked;
             input.onchange = () => toggleCheckItem(item.id, idx);
-            
             label.innerHTML = `<span class="checkmark-box"></span><span class="text">${obj.text}</span>`;
             label.prepend(input);
             container.appendChild(label);
