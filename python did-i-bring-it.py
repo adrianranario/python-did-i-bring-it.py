@@ -33,10 +33,7 @@ html_code = """
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Did I Bring It?</title>
     
-    <!-- FAVICON -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%232A4298;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%236A82FB;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='0' y='0' width='32' height='32' rx='10' ry='10' fill='url(%23grad)'/%3E%3Cpath d='M9 16 L13.5 20.5 L23 11' stroke='white' stroke-width='3.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-    
-    <!-- FONTS & ICONS -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     
@@ -94,7 +91,7 @@ html_code = """
         
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* HEADERS */
+        /* HEADER */
         .app-bar { display: flex; justify-content: space-between; align-items: center; padding: 20px; flex-shrink: 0; background: transparent; z-index: 10; min-height: 70px; }
         .app-bar h2 { font-size: 1.25rem; font-weight: 600; color: #000; letter-spacing: 0.5px; }
         .icon-btn { background: none; border: none; font-size: 1rem; display: flex; align-items: center; cursor: pointer; color: var(--text-dark); }
@@ -102,7 +99,6 @@ html_code = """
         .content-center { display: flex; flex-direction: column; align-items: center; width: 100%; }
         .profile-footer { margin-top: auto; width: 100%; display: flex; flex-direction: column; align-items: center; padding-bottom: 20px; flex-shrink: 0; }
         
-        /* TRASH */
         .trash-container { display: flex; justify-content: center; align-items: center; padding: 15px; transition: transform 0.2s; }
         .trash-container.trash-hover .trash-icon { color: #ff5252; transform: scale(1.4); transition: 0.2s; }
         .trash-icon { font-size: 35px; color: #aaa; transition: color 0.3s; }
@@ -130,7 +126,6 @@ html_code = """
         .avatar-option.selected { border-color: #fff; box-shadow: 0 0 0 3px var(--primary-blue); }
         .avatar-option img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* INPUTS */
         .input-group { width: 100%; display: flex; justify-content: center; margin-bottom: 10px; }
         .underline-input { 
             background: transparent; border: none; border-bottom: 2px solid var(--text-dark); 
@@ -142,7 +137,6 @@ html_code = """
         .form-container label { font-size: 0.95rem; font-weight: 500; color: #444; display: block; margin-bottom: 5px; margin-top: 5px; text-align: left; width: 100%; }
         .input-field { width: 100%; padding: 12px 15px; border-radius: 12px; border: 1px solid #ccc; background: #fff; font-size: 1rem; outline: none; font-family: var(--font-poppins); }
 
-        /* BUTTONS */
         .button-row { display: flex; gap: 20px; justify-content: center; width: 100%; margin-top: 20px; margin-bottom: 20px; flex-shrink: 0; }
         .btn-primary { background-color: var(--button-blue); padding: 12px 30px; border-radius: 12px; border: none; cursor: pointer; font-weight: 600; font-size: 1rem; width: 130px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .btn-secondary { background-color: #fff; padding: 12px 30px; border-radius: 12px; border: none; cursor: pointer; font-weight: 500; font-size: 1rem; width: 130px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
@@ -151,7 +145,6 @@ html_code = """
         .btn-delete-account { margin-top: 20px; color: white; background-color: var(--danger-color); border: none; border-radius: 12px; padding: 12px 30px; font-weight: 600; cursor: pointer; font-size: 1rem; width: 100%; max-width: 200px; box-shadow: 0 4px 10px rgba(229, 57, 53, 0.3); }
         .btn-done-pill { margin-top: 30px; background: #D1C4E9; width: 150px; padding: 15px; border: none; border-radius: 30px; font-size: 1.1rem; font-weight: 600; display: block; margin-left: auto; margin-right: auto; cursor: pointer; }
 
-        /* CALENDAR */
         .calendar-card { background: #fff; width: 100%; border-radius: 25px; padding: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); margin-bottom: 20px; margin-top: 10px; flex-shrink: 0; }
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .calendar-days, .calendar-grid-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; margin-bottom: 15px; }
@@ -165,7 +158,6 @@ html_code = """
         .time-row { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f0f0f0; padding-top: 15px; width: 100%; }
         .chip-gray { background: #eee; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 500; }
 
-        /* REMINDERS */
         .reminders-section { width: 100%; margin-bottom: 20px; }
         .reminder-card { background: rgba(255, 255, 255, 0.7); border: 2px solid #fff; border-radius: 25px; padding: 10px 15px; display: flex; align-items: center; margin-bottom: 12px; height: 70px; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.02); width: 100%; }
         .rem-title { font-weight: 600; margin-right: auto; margin-left: 10px; color: var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -173,7 +165,6 @@ html_code = """
         .rem-progress { margin-left: 5px; font-size: 0.75rem; color: #666; font-weight: 600; }
         .badge-done { background: var(--success-color); color: white; padding: 5px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: bold; margin-left: 5px; }
 
-        /* ICONS */
         .icon-box { width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
         .icon-box span { color: white; font-size: 24px; }
         
@@ -200,7 +191,6 @@ html_code = """
         .category-option.selected { border-color: #2A4298; transform: scale(1.1); box-shadow: 0 4px 8px rgba(0,0,0,0.2); border-width: 3px; }
         .category-option span { color: white; font-size: 26px; }
 
-        /* LISTS */
         .list-container { width: 100%; display: flex; flex-direction: column; }
         
         .list-item-wrapper {
@@ -253,10 +243,16 @@ html_code = """
         }
         .list-text { font-weight: 600; flex-grow: 1; margin-left: 15px; }
         
-        /* Past Items Style */
-        .list-item-wrapper.past-item .list-item-content { opacity: 0.6; background: #E0E0E0; border-color: #aaa; }
+        /* FIX: Ensure past items are opaque to hide buttons, but dim content */
+        .list-item-wrapper.past-item .list-item-content { 
+            background: #E8E8E8; 
+            border-color: #aaa;
+            opacity: 1; 
+        }
+        .list-item-wrapper.past-item .list-item-content > * {
+            opacity: 0.6;
+        }
 
-        /* ACCOUNTS */
         .switch-accounts-section { width: 100%; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 20px; margin-top: 10px; text-align: center; }
         .users-row { display: flex; justify-content: center; gap: 15px; margin-top: 10px; flex-wrap: wrap; }
         .small-user-avatar { width: 50px; height: 50px; border-radius: 50%; overflow: hidden; cursor: grab; border: 2px solid transparent; touch-action: none; }
@@ -265,7 +261,6 @@ html_code = """
         .profile-icon-mini { width: 45px !important; height: 45px !important; border-radius: 50%; background: #87CEEB; overflow: hidden; cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-shrink: 0; }
         .profile-icon-mini img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-        /* CHECKLIST CONTENT */
         .checklist-content { padding: 20px 40px; width: 100%; }
         .big-title { font-size: 2.5rem; font-weight: 600; margin-bottom: 10px; }
         .tags-row { display: flex; gap: 10px; margin-bottom: 40px; }
@@ -376,6 +371,8 @@ html_code = """
                 </div>
             </div>
             
+            <div id="calendar-clear-filter" style="display:none; margin-bottom:10px; cursor:pointer; color: #2A4298; font-weight:600;" onclick="clearDateFilter()">Show All</div>
+
             <div class="reminders-section">
                 <h4>Reminders:</h4>
                 <div id="home-reminders-list"></div>
@@ -511,16 +508,19 @@ document.addEventListener('DOMContentLoaded', () => {
         splash.style.opacity = '0';
         setTimeout(() => {
             splash.style.display = 'none';
-            if (users.length === 0) startAddUserFlow(); else navigateTo('home-screen');
+            if (users.length === 0) {
+                startAddUserFlow(); 
+            } else {
+                navigateTo('home-screen');
+            }
         }, 500);
     }, 2000);
     renderCategoryGrid();
     updateProfileDisplay();
     renderApp();
-    setupTrashDragDrop();
 });
 
-// TOUCH DND FIX: Ghost element handling
+// TOUCH DND FIX
 let draggedItem = null;
 let touchGhost = null;
 
@@ -560,7 +560,22 @@ function handleTouchEnd(e) {
     const existingGhost = document.getElementById("dragged-ghost-avatar");
     if (existingGhost) existingGhost.remove();
     touchGhost = null;
-    draggedItem = null;
+    
+    if(!draggedItem) return;
+    const trash = document.getElementById('profile-trash-target');
+    const trashRect = trash.getBoundingClientRect();
+    const touch = e.changedTouches[0];
+    
+    if (touch.clientX >= trashRect.left && touch.clientX <= trashRect.right && 
+        touch.clientY >= trashRect.top && touch.clientY <= trashRect.bottom) {
+        
+        setTimeout(() => {
+            deleteUserById(parseInt(draggedItem));
+            draggedItem = null;
+        }, 50);
+    } else {
+        draggedItem = null;
+    }
 }
 
 // ... APP LOGIC ...
@@ -692,12 +707,20 @@ function updateProfileDisplay() {
         const div = document.createElement('div');
         div.className = `small-user-avatar ${u.id === activeUserId ? 'active-user' : ''}`;
         div.innerHTML = `<img src="${u.avatar}">`;
+        div.dataset.userId = u.id;
+        
         div.onclick = () => {
             activeUserId = u.id;
             updateProfileDisplay();
             renderApp(); 
             navigateTo('home-screen');
         };
+        
+        div.addEventListener('dragstart', (e) => { e.dataTransfer.setData('text/user-id', u.id); });
+        div.addEventListener('touchstart', handleTouchStart, {passive: false});
+        div.addEventListener('touchmove', handleTouchMove, {passive: false});
+        div.addEventListener('touchend', handleTouchEnd);
+
         otherUsersContainer.appendChild(div);
     });
 }
@@ -711,6 +734,17 @@ function deleteCurrentUser() {
         updateProfileDisplay();
         renderApp();
         navigateTo('home-screen');
+    }
+}
+
+function deleteUserById(id) {
+    if(users.length <= 1) { alert("Cannot delete the only user."); return; }
+    if(confirm("Delete this user?")) {
+        checklists = checklists.filter(item => item.userId !== id);
+        users = users.filter(u => u.id !== id);
+        if(activeUserId === id) activeUserId = users[0].id;
+        updateProfileDisplay();
+        renderApp();
     }
 }
 
@@ -755,6 +789,13 @@ function renderCalendar() {
 
         grid.appendChild(dayDiv);
     }
+}
+
+function clearDateFilter() {
+    selectedDateFilter = null;
+    document.getElementById('calendar-clear-filter').style.display = 'none';
+    renderCalendar();
+    renderApp();
 }
 
 function renderApp() {
@@ -802,7 +843,7 @@ function renderApp() {
             homeContainer.appendChild(card);
         }
         
-        // LISTS (ALL SWIPEABLE, NO PRE-VISIBLE BUTTONS)
+        // LISTS (Swipeable for ALL items)
         const wrapper = document.createElement('div');
         wrapper.className = 'list-item-wrapper';
         if(isPast && !isViewingArchived) wrapper.classList.add('past-item');
@@ -816,7 +857,7 @@ function renderApp() {
                 <div class="action-btn delete" onclick="deleteList(${item.id})"><span class="material-icons-round">delete</span></div>
             `;
         } else {
-            // STANDARD SWIPE BEHAVIOR (ARCHIVE + DELETE) FOR ALL LISTS
+            // SHOW ARCHIVE + DELETE (SWIPE ONLY)
             actions.innerHTML = `
                 <div class="action-btn archive" onclick="archiveList(${item.id})"><span class="material-icons-round">archive</span></div>
                 <div class="action-btn delete" onclick="deleteList(${item.id})"><span class="material-icons-round">delete</span></div>
@@ -930,12 +971,10 @@ function updateChecklistUI(item) {
         } else {
             const label = document.createElement('label');
             label.className = `checkbox-container ${obj.isChecked ? 'checked' : ''}`;
-            
             const input = document.createElement('input');
             input.type = 'checkbox';
             input.checked = obj.isChecked;
             input.onchange = () => toggleCheckItem(item.id, idx);
-            
             label.innerHTML = `<span class="checkmark-box"></span><span class="text">${obj.text}</span>`;
             label.prepend(input);
             container.appendChild(label);
