@@ -355,9 +355,6 @@ html_code = """
                     <span class="chip-gray" id="current-time-display">--:--</span>
                 </div>
             </div>
-            
-            <div id="calendar-clear-filter" style="display:none; margin-bottom:10px; cursor:pointer; color: #2A4298; font-weight:600;" onclick="clearDateFilter()">Show All</div>
-
             <div class="reminders-section">
                 <h4>Reminders:</h4>
                 <div id="home-reminders-list"></div>
@@ -504,6 +501,49 @@ document.addEventListener('DOMContentLoaded', () => {
     updateProfileDisplay();
     renderApp();
 });
+
+// TOUCH DND FIX: Ghost element handling (Only for user avatars if needed, but deleted per request. Keeping logic clean just in case)
+let draggedItem = null;
+let touchGhost = null;
+
+function handleTouchStart(e) {
+    const target = e.currentTarget;
+    const id = target.dataset.userId;
+    if(!id) return;
+    draggedItem = id;
+    
+    touchGhost = target.cloneNode(true);
+    touchGhost.id = "dragged-ghost-avatar"; 
+    touchGhost.style.position = 'fixed';
+    touchGhost.style.opacity = '0.9';
+    touchGhost.style.pointerEvents = 'none';
+    touchGhost.style.zIndex = '9999';
+    touchGhost.style.width = '70px'; 
+    touchGhost.style.height = '70px';
+    touchGhost.style.borderRadius = '50%';
+    touchGhost.style.border = '2px solid white';
+    touchGhost.style.boxShadow = '0 10px 20px rgba(0,0,0,0.3)';
+    
+    const touch = e.touches[0];
+    touchGhost.style.left = (touch.clientX - 35) + 'px';
+    touchGhost.style.top = (touch.clientY - 35) + 'px';
+    document.body.appendChild(touchGhost);
+}
+
+function handleTouchMove(e) {
+    if(!touchGhost) return;
+    e.preventDefault(); 
+    const touch = e.touches[0];
+    touchGhost.style.left = (touch.clientX - 35) + 'px';
+    touchGhost.style.top = (touch.clientY - 35) + 'px';
+}
+
+function handleTouchEnd(e) {
+    const existingGhost = document.getElementById("dragged-ghost-avatar");
+    if (existingGhost) existingGhost.remove();
+    touchGhost = null;
+    draggedItem = null;
+}
 
 // ... APP LOGIC ...
 function formatTime(timeStr) {
@@ -686,12 +726,11 @@ function renderCalendar() {
         if(selectedDateFilter === dateString) dayDiv.classList.add('selected-date-marker');
 
         dayDiv.onclick = () => {
+            // TOGGLE FILTER
             if(selectedDateFilter === dateString) {
-                selectedDateFilter = null;
-                document.getElementById('calendar-clear-filter').style.display = 'none';
+                selectedDateFilter = null; // Clear filter
             } else {
-                selectedDateFilter = dateString;
-                document.getElementById('calendar-clear-filter').style.display = 'block';
+                selectedDateFilter = dateString; // Set filter
             }
             renderCalendar();
             renderApp();
@@ -699,13 +738,6 @@ function renderCalendar() {
 
         grid.appendChild(dayDiv);
     }
-}
-
-function clearDateFilter() {
-    selectedDateFilter = null;
-    document.getElementById('calendar-clear-filter').style.display = 'none';
-    renderCalendar();
-    renderApp();
 }
 
 function renderApp() {
@@ -752,7 +784,7 @@ function renderApp() {
             homeContainer.appendChild(card);
         }
         
-        // LISTS (Swipeable)
+        // LISTS (Swipeable for ALL)
         const wrapper = document.createElement('div');
         wrapper.className = 'list-item-wrapper';
         if(isPast && !isViewingArchived) wrapper.classList.add('past-item');
@@ -766,7 +798,7 @@ function renderApp() {
                 <div class="action-btn delete" onclick="deleteList(${item.id})"><span class="material-icons-round">delete</span></div>
             `;
         } else {
-            // Updated Logic: Always show Archive AND Delete options
+            // ALWAYS SHOW ARCHIVE AND DELETE
             actions.innerHTML = `
                 <div class="action-btn archive" onclick="archiveList(${item.id})"><span class="material-icons-round">archive</span></div>
                 <div class="action-btn delete" onclick="deleteList(${item.id})"><span class="material-icons-round">delete</span></div>
@@ -880,12 +912,10 @@ function updateChecklistUI(item) {
         } else {
             const label = document.createElement('label');
             label.className = `checkbox-container ${obj.isChecked ? 'checked' : ''}`;
-            
             const input = document.createElement('input');
             input.type = 'checkbox';
             input.checked = obj.isChecked;
             input.onchange = () => toggleCheckItem(item.id, idx);
-            
             label.innerHTML = `<span class="checkmark-box"></span><span class="text">${obj.text}</span>`;
             label.prepend(input);
             container.appendChild(label);
