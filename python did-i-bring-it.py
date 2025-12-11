@@ -52,7 +52,7 @@ html_code = """
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
+            overflow: hidden; /* Prevent body scroll */
             margin: 0;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
@@ -65,7 +65,7 @@ html_code = """
             max-height: 90vh;
             background-color: var(--bg-color);
             position: relative;
-            overflow: hidden;
+            overflow: hidden; /* Prevent viewport scroll, handle inner scroll */
             box-shadow: 0 0 50px rgba(0,0,0,0.5);
             display: flex;
             flex-direction: column;
@@ -78,46 +78,76 @@ html_code = """
         .screen { display: none; flex-direction: column; width: 100%; height: 100%; background-color: var(--bg-color); animation: fadeIn 0.3s ease-in-out; }
         .screen.active { display: flex; }
         
-        .scrollable-content { flex-grow: 1; overflow-y: auto; overflow-x: hidden; width: 100%; padding: 0 20px 20px 20px; display: flex; flex-direction: column; align-items: center; }
+        /* SCROLLABLE AREAS */
+        .scrollable-content { 
+            flex-grow: 1; 
+            overflow-y: auto; /* Only this scrolls */
+            width: 100%; 
+            padding: 0 20px 20px 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+        }
         .scrollable-content::-webkit-scrollbar { display: none; }
         
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* HEADER */
         .app-bar { display: flex; justify-content: space-between; align-items: center; padding: 20px; flex-shrink: 0; background: transparent; z-index: 10; min-height: 70px; }
         .app-bar h2 { font-size: 1.25rem; font-weight: 600; color: #000; letter-spacing: 0.5px; }
         .icon-btn { background: none; border: none; font-size: 1rem; display: flex; align-items: center; cursor: pointer; color: var(--text-dark); }
 
         .content-center { display: flex; flex-direction: column; align-items: center; width: 100%; }
-        .profile-footer { margin-top: auto; width: 100%; display: flex; flex-direction: column; align-items: center; padding-bottom: 20px; flex-shrink: 0; }
         
-        .trash-container { display: flex; justify-content: center; align-items: center; padding: 15px; transition: transform 0.2s; }
-        .trash-container.trash-hover .trash-icon { color: #ff5252; transform: scale(1.4); transition: 0.2s; }
-        .trash-icon { font-size: 35px; color: #aaa; transition: color 0.3s; }
-        .hint-text { text-align: center; color: #888; font-size: 0.8rem; margin-bottom: 5px; }
-
         /* AVATARS */
         .avatar-large-wrapper { margin-top: 10px; margin-bottom: 20px; display: flex; justify-content: center; width: 100%; }
-        .avatar-large, .avatar-large-circle { width: 140px !important; height: 140px !important; min-width: 140px; min-height: 140px; background-color: #fff; border-radius: 50%; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin: 0 auto; }
+        .avatar-large, .avatar-large-circle {
+            width: 140px !important; height: 140px !important;
+            min-width: 140px; min-height: 140px;
+            background-color: #fff; border-radius: 50%;
+            overflow: hidden; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin: 0 auto; 
+        }
         .avatar-large-circle { background-color: #6495ED; display: flex; justify-content: center; align-items: flex-end; margin-bottom: 20px; }
         .avatar-large img, .avatar-large-circle img { width: 100%; height: 100%; object-fit: cover; }
-        .avatar-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; margin-top: 10px; width: 100%; justify-items: center; }
+
+        .avatar-grid { 
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; 
+            margin-bottom: 30px; margin-top: 10px; 
+            width: 100%; justify-items: center; 
+        }
         .avatar-option { width: 70px; height: 70px; border-radius: 50%; background-color: #ddd; overflow: hidden; border: 3px solid transparent; cursor: pointer; }
         .avatar-option.selected { border-color: #fff; box-shadow: 0 0 0 3px var(--primary-blue); }
         .avatar-option img { width: 100%; height: 100%; object-fit: cover; }
 
+        /* INPUTS */
         .input-group { width: 100%; display: flex; justify-content: center; margin-bottom: 10px; }
-        .underline-input { background: transparent; border: none; border-bottom: 2px solid var(--text-dark); text-align: center; font-size: 1.5rem; padding: 10px; width: 80%; margin-bottom: 20px; outline: none; font-weight: 500; font-family: var(--font-poppins); }
+        .underline-input { 
+            background: transparent; border: none; border-bottom: 2px solid var(--text-dark); 
+            text-align: center; font-size: 1.5rem; padding: 10px; width: 80%; margin-bottom: 20px; 
+            outline: none; font-weight: 500; font-family: var(--font-poppins);
+        }
         .form-container { width: 100%; max-width: 340px; display: flex; flex-direction: column; gap: 15px; }
         .form-container label { font-size: 0.95rem; font-weight: 500; color: #444; display: block; margin-bottom: 5px; margin-top: 5px; text-align: left; width: 100%; }
         .input-field { width: 100%; padding: 12px 15px; border-radius: 12px; border: 1px solid #ccc; background: #fff; font-size: 1rem; outline: none; font-family: var(--font-poppins); }
 
+        /* BUTTONS */
         .button-row { display: flex; gap: 20px; justify-content: center; width: 100%; margin-top: 20px; margin-bottom: 20px; flex-shrink: 0; }
         .btn-primary { background-color: var(--button-blue); padding: 12px 30px; border-radius: 12px; border: none; cursor: pointer; font-weight: 600; font-size: 1rem; width: 130px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .btn-secondary { background-color: #fff; padding: 12px 30px; border-radius: 12px; border: none; cursor: pointer; font-weight: 500; font-size: 1rem; width: 130px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .btn-icon-small { background: var(--primary-blue); color: white; border: none; border-radius: 8px; width: 50px; cursor: pointer; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
-        .btn-text-danger { margin-top: 10px; color: var(--danger-color); background: none; border: none; font-weight: 600; cursor: pointer; font-size: 0.9rem; margin-bottom: 30px; }
+        
+        /* DELETE ACCOUNT BUTTON */
+        .btn-delete-account { 
+            margin-top: 20px; color: white; background-color: var(--danger-color); 
+            border: none; border-radius: 12px; padding: 12px 30px; 
+            font-weight: 600; cursor: pointer; font-size: 1rem; width: 100%; max-width: 200px;
+            box-shadow: 0 4px 10px rgba(229, 57, 53, 0.3);
+        }
         .btn-done-pill { margin-top: 30px; background: #D1C4E9; width: 150px; padding: 15px; border: none; border-radius: 30px; font-size: 1.1rem; font-weight: 600; display: block; margin-left: auto; margin-right: auto; cursor: pointer; }
 
+        /* CALENDAR */
         .calendar-card { background: #fff; width: 100%; border-radius: 25px; padding: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); margin-bottom: 20px; margin-top: 10px; flex-shrink: 0; }
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .calendar-days, .calendar-grid-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; margin-bottom: 15px; }
@@ -129,12 +159,13 @@ html_code = """
         .time-row { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f0f0f0; padding-top: 15px; width: 100%; }
         .chip-gray { background: #eee; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 500; }
 
+        /* REMINDERS */
         .reminders-section { width: 100%; margin-bottom: 20px; }
         .reminder-card { background: rgba(255, 255, 255, 0.7); border: 2px solid #fff; border-radius: 25px; padding: 10px 15px; display: flex; align-items: center; margin-bottom: 12px; height: 70px; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.02); width: 100%; }
         .rem-title { font-weight: 600; margin-right: auto; margin-left: 10px; color: var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .rem-date, .rem-time { background: #CFD8DC; padding: 5px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 500; margin-left: 5px; white-space: nowrap; flex-shrink: 0;}
-        .rem-progress { font-size: 0.75rem; color: #555; margin-left: 5px; font-weight: 600; }
 
+        /* ICONS */
         .icon-box { width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
         .icon-box span { color: white; font-size: 24px; }
         
@@ -156,21 +187,21 @@ html_code = """
 
         .category-label { font-size: 0.9rem; font-weight: 500; color: #666; margin-bottom: 5px; align-self: flex-start; margin-left: 5px; }
         .category-grid { display: flex; gap: 12px; overflow-x: auto; padding: 10px 5px; width: 100%; margin-bottom: 10px; scrollbar-width: none; }
-        .category-grid::-webkit-scrollbar { display: none; }
         .category-option { width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; flex-shrink: 0; border: 2px solid transparent; transition: transform 0.2s; }
         .category-option.selected { border-color: #2A4298; transform: scale(1.1); box-shadow: 0 4px 8px rgba(0,0,0,0.2); border-width: 3px; }
         .category-option span { color: white; font-size: 26px; }
 
-        /* --- SWIPEABLE LIST ITEMS --- */
-        .list-container { width: 100%; display: flex; flex-direction: column; padding: 20px; }
+        /* LISTS (SWIPEABLE) */
+        .list-container { width: 100%; display: flex; flex-direction: column; }
         
         .list-item-wrapper {
             position: relative;
             width: 100%;
-            height: 80px; /* Fixed height for swipe consistency */
+            height: 80px; 
             margin-bottom: 15px;
             overflow: hidden;
             border-radius: 20px;
+            flex-shrink: 0;
         }
 
         .list-item-actions {
@@ -178,7 +209,7 @@ html_code = """
             top: 0;
             right: 0;
             height: 100%;
-            width: 140px; /* Space for 2 buttons */
+            width: 160px; /* Space for 2 buttons */
             display: flex;
             z-index: 1;
         }
@@ -210,10 +241,20 @@ html_code = """
             transition: transform 0.2s ease-out;
             cursor: pointer;
         }
-
         .list-text { font-weight: 600; flex-grow: 1; margin-left: 15px; }
 
-        /* --- CHECKLIST ITEMS --- */
+        /* SWITCH ACCOUNTS */
+        .switch-accounts-section { width: 100%; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 20px; margin-top: 10px; text-align: center; }
+        .users-row { display: flex; justify-content: center; gap: 15px; margin-top: 10px; flex-wrap: wrap; }
+        
+        .small-user-avatar { width: 50px; height: 50px; border-radius: 50%; overflow: hidden; cursor: pointer; border: 2px solid transparent; }
+        .small-user-avatar.active-user { border-color: var(--primary-blue); box-shadow: 0 0 10px rgba(42, 66, 152, 0.3); }
+        .small-user-avatar img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+        
+        .profile-icon-mini { width: 45px !important; height: 45px !important; border-radius: 50%; background: #87CEEB; overflow: hidden; cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-shrink: 0; }
+        .profile-icon-mini img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        /* CHECKLIST CONTENT */
         .checklist-content { padding: 20px 40px; width: 100%; }
         .big-title { font-size: 2.5rem; font-weight: 600; margin-bottom: 10px; }
         .tags-row { display: flex; gap: 10px; margin-bottom: 40px; }
@@ -227,21 +268,9 @@ html_code = """
         .checkbox-container input:checked ~ .checkmark-box:after { display: block; }
         .checkmark-box:after { content: ""; position: absolute; display: none; left: 7px; top: 3px; width: 6px; height: 12px; border: solid white; border-width: 0 3px 3px 0; transform: rotate(45deg); }
         
-        /* Strikethrough for checked text */
         .checkbox-container.checked .text { text-decoration: line-through; color: #888; }
-        
         .text { flex-grow: 1; word-break: break-word; color: #333; }
         .delete-item-icon { color: var(--danger-color); font-size: 1.8rem; cursor: pointer; margin-left: auto; padding: 5px; }
-
-        .switch-accounts-section { width: 100%; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 20px; margin-top: 10px; text-align: center; }
-        .users-row { display: flex; justify-content: center; gap: 15px; margin-top: 10px; flex-wrap: wrap; }
-        
-        .small-user-avatar { width: 50px; height: 50px; border-radius: 50%; overflow: hidden; cursor: grab; border: 2px solid transparent; touch-action: none; }
-        .small-user-avatar.active-user { border-color: var(--primary-blue); box-shadow: 0 0 10px rgba(42, 66, 152, 0.3); }
-        .small-user-avatar img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
-        
-        .profile-icon-mini { width: 45px !important; height: 45px !important; border-radius: 50%; background: #87CEEB; overflow: hidden; cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-shrink: 0; }
-        .profile-icon-mini img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
         .add-item-row { display: flex; gap: 10px; width: 100%; }
         .temp-tag { background: #fff; padding: 5px 10px; border-radius: 15px; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; border: 1px solid #ccc; margin-right: 5px; margin-bottom: 5px; }
@@ -281,7 +310,6 @@ html_code = """
                     <button class="btn-primary" onclick="saveUser()">Done</button>
                     <button class="btn-secondary" onclick="cancelUserAction()">Cancel</button>
                 </div>
-                <button id="btn-delete-user" class="btn-text-danger" onclick="deleteCurrentUser()" style="display:none;">Delete User</button>
             </div>
         </div>
     </div>
@@ -305,12 +333,9 @@ html_code = """
                     <button class="btn-primary" onclick="startEditUserFlow()">Edit Profile</button>
                     <button class="btn-secondary" onclick="navigateTo('home-screen')">Back</button>
                 </div>
-            </div>
-        </div>
-        <div class="profile-footer">
-            <p class="hint-text">Drag avatar here to delete user</p>
-            <div class="trash-container" id="profile-trash-target">
-                <span class="material-icons-round trash-icon">delete_outline</span>
+                
+                <!-- DELETE ACCOUNT BUTTON -->
+                <button class="btn-delete-account" onclick="deleteCurrentUser()">Delete Account</button>
             </div>
         </div>
     </div>
@@ -354,7 +379,7 @@ html_code = """
             <button class="icon-btn" onclick="navigateTo('add-list-screen')"><span class="material-icons-round" style="font-size: 28px;">add</span></button>
         </div>
         <div class="scrollable-content" style="padding: 0;">
-            <div class="list-container" id="all-lists-container"></div>
+            <div class="list-container" id="all-lists-container" style="padding: 20px;"></div>
         </div>
     </div>
 
@@ -422,7 +447,7 @@ html_code = """
 </div>
 
 <script>
-// --- LOGIC ---
+// --- DATA INIT ---
 let users = [];
 let activeUserId = null;
 let tempUser = { name: "", avatar: "" };
@@ -472,81 +497,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCategoryGrid();
     updateProfileDisplay();
     renderApp();
-    setupTrashDragDrop();
 });
-
-// TOUCH DND FIX
-let draggedItem = null;
-let touchGhost = null;
-
-function handleTouchStart(e) {
-    const target = e.currentTarget;
-    const id = target.dataset.userId;
-    if(!id) return;
-    draggedItem = id;
-    
-    touchGhost = target.cloneNode(true);
-    touchGhost.id = "dragged-ghost-avatar"; 
-    touchGhost.style.position = 'fixed';
-    touchGhost.style.opacity = '0.9';
-    touchGhost.style.pointerEvents = 'none';
-    touchGhost.style.zIndex = '9999';
-    touchGhost.style.width = '70px'; 
-    touchGhost.style.height = '70px';
-    touchGhost.style.borderRadius = '50%';
-    touchGhost.style.border = '2px solid white';
-    touchGhost.style.boxShadow = '0 10px 20px rgba(0,0,0,0.3)';
-    
-    const touch = e.touches[0];
-    touchGhost.style.left = (touch.clientX - 35) + 'px';
-    touchGhost.style.top = (touch.clientY - 35) + 'px';
-    document.body.appendChild(touchGhost);
-}
-
-function handleTouchMove(e) {
-    if(!touchGhost) return;
-    e.preventDefault(); 
-    const touch = e.touches[0];
-    touchGhost.style.left = (touch.clientX - 35) + 'px';
-    touchGhost.style.top = (touch.clientY - 35) + 'px';
-    
-    const trash = document.getElementById('profile-trash-target');
-    const trashRect = trash.getBoundingClientRect();
-    if (touch.clientX >= trashRect.left && touch.clientX <= trashRect.right && 
-        touch.clientY >= trashRect.top && touch.clientY <= trashRect.bottom) {
-        trash.classList.add('trash-hover');
-    } else {
-        trash.classList.remove('trash-hover');
-    }
-}
-
-function handleTouchEnd(e) {
-    // 1. IMMEDIATE CLEANUP
-    const existingGhost = document.getElementById("dragged-ghost-avatar");
-    if (existingGhost) {
-        existingGhost.remove();
-    }
-    touchGhost = null;
-    document.getElementById('profile-trash-target').classList.remove('trash-hover');
-
-    // 2. CHECK LOGIC
-    if(!draggedItem) return;
-    const trash = document.getElementById('profile-trash-target');
-    const trashRect = trash.getBoundingClientRect();
-    const touch = e.changedTouches[0];
-    
-    if (touch.clientX >= trashRect.left && touch.clientX <= trashRect.right && 
-        touch.clientY >= trashRect.top && touch.clientY <= trashRect.bottom) {
-        
-        // Small delay to allow browser repaint
-        setTimeout(() => {
-            deleteUserById(parseInt(draggedItem));
-            draggedItem = null;
-        }, 50);
-    } else {
-        draggedItem = null;
-    }
-}
 
 // ... APP LOGIC ...
 function formatTime(timeStr) {
@@ -676,45 +627,27 @@ function updateProfileDisplay() {
         const div = document.createElement('div');
         div.className = `small-user-avatar ${u.id === activeUserId ? 'active-user' : ''}`;
         div.innerHTML = `<img src="${u.avatar}">`;
-        div.draggable = true; 
-        div.dataset.userId = u.id; 
-        
+        // Removed Draggable attributes for user avatars
         div.onclick = () => {
             activeUserId = u.id;
             updateProfileDisplay();
             renderApp(); 
             navigateTo('home-screen');
         };
-        
-        div.addEventListener('dragstart', (e) => { e.dataTransfer.setData('text/user-id', u.id); });
-        
-        div.addEventListener('touchstart', handleTouchStart, {passive: false});
-        div.addEventListener('touchmove', handleTouchMove, {passive: false});
-        div.addEventListener('touchend', handleTouchEnd);
-
         otherUsersContainer.appendChild(div);
     });
 }
 
-function setupTrashDragDrop() {
-    const trash = document.getElementById('profile-trash-target');
-    trash.addEventListener('dragover', (e) => { e.preventDefault(); trash.classList.add('trash-hover'); });
-    trash.addEventListener('dragleave', () => trash.classList.remove('trash-hover'));
-    trash.addEventListener('drop', (e) => {
-        e.preventDefault(); trash.classList.remove('trash-hover');
-        const userId = parseInt(e.dataTransfer.getData('text/user-id'));
-        if(userId) deleteUserById(userId);
-    });
-}
-
-function deleteUserById(id) {
+function deleteCurrentUser() {
     if(users.length <= 1) { alert("Cannot delete the only user."); return; }
     if(confirm("Delete this user and their data?")) {
-        checklists = checklists.filter(item => item.userId !== id);
-        users = users.filter(u => u.id !== id);
-        if(activeUserId === id) activeUserId = users[0].id;
+        checklists = checklists.filter(item => item.userId !== activeUserId);
+        users = users.filter(u => u.id !== activeUserId);
+        // Switch to next available user
+        activeUserId = users[0].id;
         updateProfileDisplay();
         renderApp();
+        navigateTo('home-screen');
     }
 }
 
@@ -733,7 +666,7 @@ function renderCalendar() {
     grid.innerHTML = '';
     const firstDayIndex = new Date(displayedYear, displayedMonth, 1).getDay();
     const daysInMonth = new Date(displayedYear, displayedMonth + 1, 0).getDate();
-    const userLists = activeUserId ? checklists.filter(c => c.userId === activeUserId) : [];
+    const userLists = activeUserId ? checklists.filter(c => c.userId === activeUserId && !c.isArchived) : [];
 
     for(let i=0; i<firstDayIndex; i++) grid.appendChild(Object.assign(document.createElement('div'), {className: 'day empty'}));
 
@@ -753,27 +686,25 @@ function renderApp() {
     const listsContainer = document.getElementById('all-lists-container');
     homeContainer.innerHTML = ''; listsContainer.innerHTML = '';
     if (!activeUserId) return; 
-    const userLists = checklists.filter(c => c.userId === activeUserId);
+    const userLists = checklists.filter(c => c.userId === activeUserId && !c.isArchived);
 
     userLists.forEach(item => {
-        // --- DATA BINDING FOR CHECKED STATUS ---
-        // Calculate progress string (e.g. "2/5")
+        // Data for progress
         const total = item.items.length;
         const checkedCount = item.items.filter(i => i.isChecked).length;
         const progressStr = total > 0 ? `${checkedCount}/${total}` : '';
 
-        // --- HOME CARD ---
+        // Home Card
         const card = document.createElement('div');
         card.className = 'reminder-card';
         card.onclick = () => openChecklist(item);
-        card.innerHTML = `<div class="icon-box ${item.colorClass}"><span class="material-icons-round">${item.icon}</span></div><span class="rem-title">${item.title}</span><div style="display:flex; align-items:center;"><span class="rem-date">${formatDate(item.date)}</span><span class="rem-time">${formatTime(item.time)}</span><span class="rem-progress">${progressStr}</span></div>`;
+        card.innerHTML = `<div class="icon-box ${item.colorClass}"><span class="material-icons-round">${item.icon}</span></div><span class="rem-title">${item.title}</span><div style="display:flex; align-items:center;"><span class="rem-date">${formatDate(item.date)}</span><span class="rem-time">${formatTime(item.time)}</span><span class="rem-progress" style="margin-left:5px; font-size:0.75rem; color:#666; font-weight:600;">${progressStr}</span></div>`;
         homeContainer.appendChild(card);
         
-        // --- LIST ITEM (SWIPEABLE) ---
+        // List Item (Swipeable)
         const wrapper = document.createElement('div');
         wrapper.className = 'list-item-wrapper';
         
-        // Actions (Behind)
         const actions = document.createElement('div');
         actions.className = 'list-item-actions';
         actions.innerHTML = `
@@ -781,34 +712,30 @@ function renderApp() {
             <div class="action-btn delete" onclick="deleteList(${item.id})"><span class="material-icons-round">delete</span></div>
         `;
         
-        // Content (Front)
         const content = document.createElement('div');
         content.className = 'list-item-content';
         content.innerHTML = `<div class="icon-box ${item.colorClass}"><span class="material-icons-round">${item.icon}</span></div><div class="list-text">${item.title}</div><div style="color: #666; font-size:0.8rem; margin-right:10px;">${formatDate(item.date)} ${progressStr}</div><span class="material-icons-round arrow">chevron_right</span>`;
         
-        // Click to Open
         content.onclick = (e) => {
-            // Prevent opening if swiping happened
             if (wrapper.dataset.swiped === 'true') return;
             openChecklist(item);
         };
 
-        // --- SWIPE LOGIC ---
+        // Swipe Logic
         let startX = 0;
         let currentTranslate = 0;
-        
         content.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; });
         content.addEventListener('touchmove', (e) => {
             const touch = e.touches[0];
             const diff = touch.clientX - startX;
-            if (diff < 0 && diff > -140) { // Only swipe left
+            if (diff < 0 && diff > -160) { 
                 currentTranslate = diff;
                 content.style.transform = `translateX(${diff}px)`;
             }
         });
         content.addEventListener('touchend', (e) => {
-            if (currentTranslate < -70) { // Threshold to open
-                content.style.transform = `translateX(-140px)`;
+            if (currentTranslate < -80) { 
+                content.style.transform = `translateX(-160px)`;
                 wrapper.dataset.swiped = 'true';
             } else {
                 content.style.transform = `translateX(0px)`;
@@ -823,20 +750,22 @@ function renderApp() {
     });
 }
 
-// --- LIST ACTIONS ---
+function archiveList(id) {
+    const list = checklists.find(c => c.id === id);
+    if(list) {
+        list.isArchived = true;
+        renderApp();
+        renderCalendar();
+    }
+}
+
 function deleteList(id) {
     if(confirm('Delete this list?')) {
         checklists = checklists.filter(c => c.id !== id);
         renderApp(); renderCalendar();
     }
 }
-function archiveList(id) {
-    alert("Archived! (Simulated)");
-    // In real app, toggle isArchived flag and re-render
-    deleteList(id); // For now, just remove from view
-}
 
-// --- CHECKLIST ---
 function openChecklist(item) {
     currentEditingListId = item.id;
     isEditMode = false;
@@ -861,7 +790,6 @@ function updateChecklistUI(item) {
     const container = document.getElementById('cl-items-container');
     container.innerHTML = '';
     
-    // NEW DATA STRUCTURE SUPPORT: item is { text: "...", isChecked: bool }
     item.items.forEach((obj, idx) => {
         if(isEditMode) {
             const row = document.createElement('div');
@@ -873,27 +801,24 @@ function updateChecklistUI(item) {
             const label = document.createElement('label');
             label.className = `checkbox-container ${obj.isChecked ? 'checked' : ''}`;
             
-            // Checkbox Input
             const input = document.createElement('input');
             input.type = 'checkbox';
             input.checked = obj.isChecked;
             input.onchange = () => toggleCheckItem(item.id, idx);
             
             label.innerHTML = `<span class="checkmark-box"></span><span class="text">${obj.text}</span>`;
-            label.prepend(input); // Add input first
+            label.prepend(input);
             container.appendChild(label);
         }
     });
 }
 
-// TOGGLE ITEM CHECK
 function toggleCheckItem(listId, itemIndex) {
     const list = checklists.find(c => c.id === listId);
     if(list) {
         list.items[itemIndex].isChecked = !list.items[itemIndex].isChecked;
-        // Re-render to update strikethrough and home screen progress
         updateChecklistUI(list);
-        renderApp(); // Updates Home/Lists view immediately
+        renderApp(); // Update home progress
     }
 }
 
@@ -920,7 +845,6 @@ function addChecklistItemInEdit() {
     if(val) {
         const index = checklists.findIndex(c => c.id == currentEditingListId);
         if(index > -1) { 
-            // Add as Object
             checklists[index].items.push({ text: val, isChecked: false }); 
             updateChecklistUI(checklists[index]); 
             document.getElementById('add-cl-item-input').value=''; 
@@ -965,7 +889,8 @@ function createNewList() {
         title, date, time: time || 'All Day', 
         icon: selectedCategory.icon, 
         colorClass: selectedCategory.color, 
-        items: [...tempNewListItems] 
+        items: [...tempNewListItems],
+        isArchived: false
     });
     
     tempNewListItems = []; renderTempItems(); 
