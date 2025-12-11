@@ -356,6 +356,8 @@ html_code = """
                 </div>
             </div>
             
+            <div id="calendar-clear-filter" style="display:none; margin-bottom:10px; cursor:pointer; color: #2A4298; font-weight:600;" onclick="clearDateFilter()">Show All</div>
+
             <div class="reminders-section">
                 <h4>Reminders:</h4>
                 <div id="home-reminders-list"></div>
@@ -491,7 +493,11 @@ document.addEventListener('DOMContentLoaded', () => {
         splash.style.opacity = '0';
         setTimeout(() => {
             splash.style.display = 'none';
-            if (users.length === 0) startAddUserFlow(); else navigateTo('home-screen');
+            if (users.length === 0) {
+                startAddUserFlow(); 
+            } else {
+                navigateTo('home-screen');
+            }
         }, 500);
     }, 2000);
     renderCategoryGrid();
@@ -499,7 +505,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderApp();
 });
 
-// TOUCH DND FIX: Ghost element handling (User Avatars)
+// TOUCH DND FIX: Ghost element handling (Only for user avatars if needed, but deleted per request. Keeping logic clean just in case)
 let draggedItem = null;
 let touchGhost = null;
 
@@ -671,14 +677,12 @@ function updateProfileDisplay() {
         const div = document.createElement('div');
         div.className = `small-user-avatar ${u.id === activeUserId ? 'active-user' : ''}`;
         div.innerHTML = `<img src="${u.avatar}">`;
-        div.dataset.userId = u.id; 
         div.onclick = () => {
             activeUserId = u.id;
             updateProfileDisplay();
             renderApp(); 
             navigateTo('home-screen');
         };
-        // DND for user delete removed
         otherUsersContainer.appendChild(div);
     });
 }
@@ -719,13 +723,11 @@ function renderCalendar() {
         dayDiv.className = 'day';
         dayDiv.innerText = d;
         const dateString = `${displayedYear}-${String(displayedMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-        
-        // Markers
         if (currentDateAPI.getDate() === d && currentDateAPI.getMonth() === displayedMonth && currentDateAPI.getFullYear() === displayedYear) dayDiv.classList.add('today-marker');
         if(userLists.some(item => item.date === dateString)) dayDiv.classList.add('has-event');
+        
         if(selectedDateFilter === dateString) dayDiv.classList.add('selected-date-marker');
 
-        // Click Logic
         dayDiv.onclick = () => {
             if(selectedDateFilter === dateString) {
                 selectedDateFilter = null; // Toggle Off
@@ -738,6 +740,13 @@ function renderCalendar() {
 
         grid.appendChild(dayDiv);
     }
+}
+
+function clearDateFilter() {
+    selectedDateFilter = null;
+    document.getElementById('calendar-clear-filter').style.display = 'none';
+    renderCalendar();
+    renderApp();
 }
 
 function renderApp() {
@@ -775,7 +784,7 @@ function renderApp() {
         const itemDate = new Date(item.date);
         const isPast = itemDate < today;
 
-        // HOME (No Archive view here)
+        // HOME
         if(!isViewingArchived) {
             const card = document.createElement('div');
             card.className = 'reminder-card';
@@ -799,7 +808,7 @@ function renderApp() {
                 <div class="action-btn delete" onclick="deleteList(${item.id})"><span class="material-icons-round">delete</span></div>
             `;
         } else {
-            // Archive + Delete available for ALL items via swipe
+            // ALWAYS SHOW ARCHIVE AND DELETE
             actions.innerHTML = `
                 <div class="action-btn archive" onclick="archiveList(${item.id})"><span class="material-icons-round">archive</span></div>
                 <div class="action-btn delete" onclick="deleteList(${item.id})"><span class="material-icons-round">delete</span></div>
@@ -913,10 +922,12 @@ function updateChecklistUI(item) {
         } else {
             const label = document.createElement('label');
             label.className = `checkbox-container ${obj.isChecked ? 'checked' : ''}`;
+            
             const input = document.createElement('input');
             input.type = 'checkbox';
             input.checked = obj.isChecked;
             input.onchange = () => toggleCheckItem(item.id, idx);
+            
             label.innerHTML = `<span class="checkmark-box"></span><span class="text">${obj.text}</span>`;
             label.prepend(input);
             container.appendChild(label);
@@ -1020,4 +1031,4 @@ function formatDate(isoStr) {
 
 c1, c2, c3 = st.columns([1, 2, 1])
 with c2:
-    components.html(html_code, height=950, scrolling=True)
+    components.html(html_code, height=950, scrolling=False)
