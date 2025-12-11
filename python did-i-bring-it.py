@@ -1,9 +1,6 @@
 import streamlit as st
 import streamlit.components.v1 as components
 
-# ==========================================
-# 1. CONFIGURE STREAMLIT PAGE
-# ==========================================
 st.set_page_config(
     page_title="Did I Bring It?",
     page_icon="☑️",
@@ -11,7 +8,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Hide Streamlit's default UI elements for a cleaner look
 hide_st_style = """
             <style>
             #MainMenu {visibility: hidden;}
@@ -22,9 +18,6 @@ hide_st_style = """
             """
 st.markdown(hide_st_style, unsafe_allow_html=True)
 
-# ==========================================
-# 2. APP CONTENT (HTML/CSS/JS)
-# ==========================================
 html_code = """
 <!DOCTYPE html>
 <html lang="en">
@@ -33,10 +26,7 @@ html_code = """
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Did I Bring It?</title>
     
-    <!-- Modern Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%232A4298;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%236A82FB;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='0' y='0' width='32' height='32' rx='10' ry='10' fill='url(%23grad)'/%3E%3Cpath d='M9 16 L13.5 20.5 L23 11' stroke='white' stroke-width='3.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-    
-    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     
@@ -49,6 +39,7 @@ html_code = """
             --button-blue: #B0C4F8;
             --font-poppins: 'Poppins', sans-serif;
             --danger-color: #e53935;
+            --archive-color: #FF9800;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -67,7 +58,6 @@ html_code = """
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- MOBILE VIEWPORT SIMULATOR --- */
         #mobile-viewport {
             width: 100%;
             height: 100%;
@@ -85,24 +75,19 @@ html_code = """
             #mobile-viewport { max-width: 100%; max-height: 100%; border-radius: 0; box-shadow: none; }
         }
 
-        /* --- LAYOUT --- */
         .screen { display: none; flex-direction: column; width: 100%; height: 100%; background-color: var(--bg-color); animation: fadeIn 0.3s ease-in-out; }
         .screen.active { display: flex; }
         
-        .scrollable-content { flex-grow: 1; overflow-y: auto; width: 100%; padding: 0 20px 20px 20px; display: flex; flex-direction: column; align-items: center; }
+        .scrollable-content { flex-grow: 1; overflow-y: auto; overflow-x: hidden; width: 100%; padding: 0 20px 20px 20px; display: flex; flex-direction: column; align-items: center; }
         .scrollable-content::-webkit-scrollbar { display: none; }
         
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- HEADER --- */
         .app-bar { display: flex; justify-content: space-between; align-items: center; padding: 20px; flex-shrink: 0; background: transparent; z-index: 10; min-height: 70px; }
         .app-bar h2 { font-size: 1.25rem; font-weight: 600; color: #000; letter-spacing: 0.5px; }
         .icon-btn { background: none; border: none; font-size: 1rem; display: flex; align-items: center; cursor: pointer; color: var(--text-dark); }
 
-        /* --- CONTENT UTILS --- */
         .content-center { display: flex; flex-direction: column; align-items: center; width: 100%; }
-        
-        /* --- PROFILE FOOTER (TRASH) --- */
         .profile-footer { margin-top: auto; width: 100%; display: flex; flex-direction: column; align-items: center; padding-bottom: 20px; flex-shrink: 0; }
         
         .trash-container { display: flex; justify-content: center; align-items: center; padding: 15px; transition: transform 0.2s; }
@@ -110,53 +95,22 @@ html_code = """
         .trash-icon { font-size: 35px; color: #aaa; transition: color 0.3s; }
         .hint-text { text-align: center; color: #888; font-size: 0.8rem; margin-bottom: 5px; }
 
-        /* --- AVATARS --- */
-        .avatar-large-wrapper { 
-            margin-top: 10px; margin-bottom: 20px; 
-            display: flex; justify-content: center; width: 100%; 
-        }
-        .avatar-large, .avatar-large-circle {
-            width: 140px !important; height: 140px !important;
-            min-width: 140px; min-height: 140px;
-            background-color: #fff; border-radius: 50%;
-            overflow: hidden; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            margin: 0 auto; 
-        }
+        /* AVATARS */
+        .avatar-large-wrapper { margin-top: 10px; margin-bottom: 20px; display: flex; justify-content: center; width: 100%; }
+        .avatar-large, .avatar-large-circle { width: 140px !important; height: 140px !important; min-width: 140px; min-height: 140px; background-color: #fff; border-radius: 50%; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin: 0 auto; }
         .avatar-large-circle { background-color: #6495ED; display: flex; justify-content: center; align-items: flex-end; margin-bottom: 20px; }
         .avatar-large img, .avatar-large-circle img { width: 100%; height: 100%; object-fit: cover; }
-
-        .avatar-grid { 
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; 
-            margin-bottom: 30px; margin-top: 10px; 
-            width: 100%; justify-items: center; 
-        }
+        .avatar-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; margin-top: 10px; width: 100%; justify-items: center; }
         .avatar-option { width: 70px; height: 70px; border-radius: 50%; background-color: #ddd; overflow: hidden; border: 3px solid transparent; cursor: pointer; }
         .avatar-option.selected { border-color: #fff; box-shadow: 0 0 0 3px var(--primary-blue); }
         .avatar-option img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* --- INPUTS --- */
         .input-group { width: 100%; display: flex; justify-content: center; margin-bottom: 10px; }
-        
-        .underline-input { 
-            background: transparent; 
-            border: none; 
-            border-bottom: 2px solid var(--text-dark); 
-            text-align: center; 
-            font-size: 1.5rem; 
-            padding: 10px; 
-            width: 80%; 
-            margin-bottom: 20px; 
-            outline: none; 
-            font-weight: 500; 
-            font-family: var(--font-poppins);
-        }
-
+        .underline-input { background: transparent; border: none; border-bottom: 2px solid var(--text-dark); text-align: center; font-size: 1.5rem; padding: 10px; width: 80%; margin-bottom: 20px; outline: none; font-weight: 500; font-family: var(--font-poppins); }
         .form-container { width: 100%; max-width: 340px; display: flex; flex-direction: column; gap: 15px; }
         .form-container label { font-size: 0.95rem; font-weight: 500; color: #444; display: block; margin-bottom: 5px; margin-top: 5px; text-align: left; width: 100%; }
         .input-field { width: 100%; padding: 12px 15px; border-radius: 12px; border: 1px solid #ccc; background: #fff; font-size: 1rem; outline: none; font-family: var(--font-poppins); }
 
-        /* --- BUTTONS --- */
         .button-row { display: flex; gap: 20px; justify-content: center; width: 100%; margin-top: 20px; margin-bottom: 20px; flex-shrink: 0; }
         .btn-primary { background-color: var(--button-blue); padding: 12px 30px; border-radius: 12px; border: none; cursor: pointer; font-weight: 600; font-size: 1rem; width: 130px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .btn-secondary { background-color: #fff; padding: 12px 30px; border-radius: 12px; border: none; cursor: pointer; font-weight: 500; font-size: 1rem; width: 130px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
@@ -164,7 +118,6 @@ html_code = """
         .btn-text-danger { margin-top: 10px; color: var(--danger-color); background: none; border: none; font-weight: 600; cursor: pointer; font-size: 0.9rem; margin-bottom: 30px; }
         .btn-done-pill { margin-top: 30px; background: #D1C4E9; width: 150px; padding: 15px; border: none; border-radius: 30px; font-size: 1.1rem; font-weight: 600; display: block; margin-left: auto; margin-right: auto; cursor: pointer; }
 
-        /* --- CALENDAR --- */
         .calendar-card { background: #fff; width: 100%; border-radius: 25px; padding: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); margin-bottom: 20px; margin-top: 10px; flex-shrink: 0; }
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .calendar-days, .calendar-grid-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; margin-bottom: 15px; }
@@ -176,17 +129,12 @@ html_code = """
         .time-row { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f0f0f0; padding-top: 15px; width: 100%; }
         .chip-gray { background: #eee; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 500; }
 
-        /* --- REMINDERS & LISTS --- */
         .reminders-section { width: 100%; margin-bottom: 20px; }
         .reminder-card { background: rgba(255, 255, 255, 0.7); border: 2px solid #fff; border-radius: 25px; padding: 10px 15px; display: flex; align-items: center; margin-bottom: 12px; height: 70px; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.02); width: 100%; }
         .rem-title { font-weight: 600; margin-right: auto; margin-left: 10px; color: var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .rem-date, .rem-time { background: #CFD8DC; padding: 5px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 500; margin-left: 5px; white-space: nowrap; flex-shrink: 0;}
+        .rem-progress { font-size: 0.75rem; color: #555; margin-left: 5px; font-weight: 600; }
 
-        .list-container { width: 100%; display: flex; flex-direction: column; }
-        .list-item { background: #D4F1F4; border: 1px solid #7F8C8D; border-radius: 20px; padding: 15px; display: flex; align-items: center; margin-bottom: 15px; cursor: pointer; width: 100%; }
-        .list-text { font-weight: 600; flex-grow: 1; margin-left: 15px; }
-
-        /* --- ICONS & CATEGORIES --- */
         .icon-box { width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
         .icon-box span { color: white; font-size: 24px; }
         
@@ -213,18 +161,59 @@ html_code = """
         .category-option.selected { border-color: #2A4298; transform: scale(1.1); box-shadow: 0 4px 8px rgba(0,0,0,0.2); border-width: 3px; }
         .category-option span { color: white; font-size: 26px; }
 
-        /* --- USER SWITCHER --- */
-        .switch-accounts-section { width: 100%; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 20px; margin-top: 10px; text-align: center; }
-        .users-row { display: flex; justify-content: center; gap: 15px; margin-top: 10px; flex-wrap: wrap; }
+        /* --- SWIPEABLE LIST ITEMS --- */
+        .list-container { width: 100%; display: flex; flex-direction: column; padding: 20px; }
         
-        .small-user-avatar { width: 50px; height: 50px; border-radius: 50%; overflow: hidden; cursor: grab; border: 2px solid transparent; touch-action: none; }
-        .small-user-avatar.active-user { border-color: var(--primary-blue); box-shadow: 0 0 10px rgba(42, 66, 152, 0.3); }
-        .small-user-avatar img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
-        
-        .profile-icon-mini { width: 45px !important; height: 45px !important; border-radius: 50%; background: #87CEEB; overflow: hidden; cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-shrink: 0; }
-        .profile-icon-mini img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .list-item-wrapper {
+            position: relative;
+            width: 100%;
+            height: 80px; /* Fixed height for swipe consistency */
+            margin-bottom: 15px;
+            overflow: hidden;
+            border-radius: 20px;
+        }
 
-        /* --- CHECKLIST UI --- */
+        .list-item-actions {
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 100%;
+            width: 140px; /* Space for 2 buttons */
+            display: flex;
+            z-index: 1;
+        }
+
+        .action-btn {
+            width: 50%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .action-btn.archive { background-color: var(--archive-color); }
+        .action-btn.delete { background-color: var(--danger-color); border-radius: 0 20px 20px 0; }
+
+        .list-item-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            background: #D4F1F4;
+            border: 1px solid #7F8C8D;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            transition: transform 0.2s ease-out;
+            cursor: pointer;
+        }
+
+        .list-text { font-weight: 600; flex-grow: 1; margin-left: 15px; }
+
+        /* --- CHECKLIST ITEMS --- */
         .checklist-content { padding: 20px 40px; width: 100%; }
         .big-title { font-size: 2.5rem; font-weight: 600; margin-bottom: 10px; }
         .tags-row { display: flex; gap: 10px; margin-bottom: 40px; }
@@ -237,14 +226,27 @@ html_code = """
         .checkbox-container input:checked ~ .checkmark-box { background-color: var(--primary-blue); border-color: var(--primary-blue); }
         .checkbox-container input:checked ~ .checkmark-box:after { display: block; }
         .checkmark-box:after { content: ""; position: absolute; display: none; left: 7px; top: 3px; width: 6px; height: 12px; border: solid white; border-width: 0 3px 3px 0; transform: rotate(45deg); }
+        
+        /* Strikethrough for checked text */
+        .checkbox-container.checked .text { text-decoration: line-through; color: #888; }
+        
         .text { flex-grow: 1; word-break: break-word; color: #333; }
         .delete-item-icon { color: var(--danger-color); font-size: 1.8rem; cursor: pointer; margin-left: auto; padding: 5px; }
+
+        .switch-accounts-section { width: 100%; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 20px; margin-top: 10px; text-align: center; }
+        .users-row { display: flex; justify-content: center; gap: 15px; margin-top: 10px; flex-wrap: wrap; }
+        
+        .small-user-avatar { width: 50px; height: 50px; border-radius: 50%; overflow: hidden; cursor: grab; border: 2px solid transparent; touch-action: none; }
+        .small-user-avatar.active-user { border-color: var(--primary-blue); box-shadow: 0 0 10px rgba(42, 66, 152, 0.3); }
+        .small-user-avatar img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+        
+        .profile-icon-mini { width: 45px !important; height: 45px !important; border-radius: 50%; background: #87CEEB; overflow: hidden; cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-shrink: 0; }
+        .profile-icon-mini img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
         .add-item-row { display: flex; gap: 10px; width: 100%; }
         .temp-tag { background: #fff; padding: 5px 10px; border-radius: 15px; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; border: 1px solid #ccc; margin-right: 5px; margin-bottom: 5px; }
         .temp-tags-container { display: flex; flex-wrap: wrap; margin-top: 10px; width: 100%; }
 
-        /* --- SPLASH --- */
         #splash-screen { background-color: #2A4298; z-index: 9999; display: flex; align-items: center; justify-content: center; position: absolute; top:0; left:0; width: 100%; height: 100%; }
         .union-logo { width: 100px; height: 100px; border: 2px solid #879BF0; border-radius: 50% 0 50% 0; display: flex; justify-content: center; align-items: center; margin-bottom: 20px; transform: rotate(-45deg); box-shadow: 0 0 20px rgba(135, 155, 240, 0.5); }
         .union-logo .checkmark { font-size: 60px; color: #879BF0; transform: rotate(45deg); }
@@ -352,13 +354,7 @@ html_code = """
             <button class="icon-btn" onclick="navigateTo('add-list-screen')"><span class="material-icons-round" style="font-size: 28px;">add</span></button>
         </div>
         <div class="scrollable-content" style="padding: 0;">
-            <div class="list-container" id="all-lists-container" style="padding: 20px;"></div>
-        </div>
-        <div class="profile-footer">
-            <p class="hint-text">Drag a list to the trash to delete</p>
-            <div class="trash-container" id="trash-target">
-                <span class="material-icons-round trash-icon">delete_outline</span>
-            </div>
+            <div class="list-container" id="all-lists-container"></div>
         </div>
     </div>
 
@@ -479,7 +475,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupTrashDragDrop();
 });
 
-// FIXED TOUCH DND (GHOST REMOVAL FIRST)
+// TOUCH DND FIX
 let draggedItem = null;
 let touchGhost = null;
 
@@ -489,7 +485,6 @@ function handleTouchStart(e) {
     if(!id) return;
     draggedItem = id;
     
-    // Create Ghost
     touchGhost = target.cloneNode(true);
     touchGhost.id = "dragged-ghost-avatar"; 
     touchGhost.style.position = 'fixed';
@@ -526,30 +521,28 @@ function handleTouchMove(e) {
 }
 
 function handleTouchEnd(e) {
-    // 1. IMMEDIATE CLEANUP OF GHOST ELEMENT
+    // 1. IMMEDIATE CLEANUP
     const existingGhost = document.getElementById("dragged-ghost-avatar");
     if (existingGhost) {
         existingGhost.remove();
     }
-    touchGhost = null; // Reset ghost variable
-    
-    // Reset hover effect
-    const trash = document.getElementById('profile-trash-target');
-    trash.classList.remove('trash-hover');
+    touchGhost = null;
+    document.getElementById('profile-trash-target').classList.remove('trash-hover');
 
     // 2. CHECK LOGIC
     if(!draggedItem) return;
+    const trash = document.getElementById('profile-trash-target');
     const trashRect = trash.getBoundingClientRect();
     const touch = e.changedTouches[0];
     
     if (touch.clientX >= trashRect.left && touch.clientX <= trashRect.right && 
         touch.clientY >= trashRect.top && touch.clientY <= trashRect.bottom) {
         
-        // Wait 100ms for UI repaint to ensure ghost is gone before freezing with alert
+        // Small delay to allow browser repaint
         setTimeout(() => {
             deleteUserById(parseInt(draggedItem));
             draggedItem = null;
-        }, 100);
+        }, 50);
     } else {
         draggedItem = null;
     }
@@ -695,11 +688,9 @@ function updateProfileDisplay() {
         
         div.addEventListener('dragstart', (e) => { e.dataTransfer.setData('text/user-id', u.id); });
         
-        // Add specific touch event listeners for mobile drag
         div.addEventListener('touchstart', handleTouchStart, {passive: false});
         div.addEventListener('touchmove', handleTouchMove, {passive: false});
         div.addEventListener('touchend', handleTouchEnd);
-        div.addEventListener('touchcancel', handleTouchEnd); // Safety check
 
         otherUsersContainer.appendChild(div);
     });
@@ -765,23 +756,87 @@ function renderApp() {
     const userLists = checklists.filter(c => c.userId === activeUserId);
 
     userLists.forEach(item => {
+        // --- DATA BINDING FOR CHECKED STATUS ---
+        // Calculate progress string (e.g. "2/5")
+        const total = item.items.length;
+        const checkedCount = item.items.filter(i => i.isChecked).length;
+        const progressStr = total > 0 ? `${checkedCount}/${total}` : '';
+
+        // --- HOME CARD ---
         const card = document.createElement('div');
         card.className = 'reminder-card';
         card.onclick = () => openChecklist(item);
-        card.innerHTML = `<div class="icon-box ${item.colorClass}"><span class="material-icons-round">${item.icon}</span></div><span class="rem-title">${item.title}</span><span class="rem-date">${formatDate(item.date)}</span><span class="rem-time">${formatTime(item.time)}</span>`;
+        card.innerHTML = `<div class="icon-box ${item.colorClass}"><span class="material-icons-round">${item.icon}</span></div><span class="rem-title">${item.title}</span><div style="display:flex; align-items:center;"><span class="rem-date">${formatDate(item.date)}</span><span class="rem-time">${formatTime(item.time)}</span><span class="rem-progress">${progressStr}</span></div>`;
         homeContainer.appendChild(card);
         
-        const li = document.createElement('div');
-        li.className = 'list-item';
-        li.draggable = true;
-        li.addEventListener('dragstart', (e) => { li.classList.add('dragging'); e.dataTransfer.setData('text/list-id', item.id); });
-        li.addEventListener('dragend', () => li.classList.remove('dragging'));
-        li.onclick = () => openChecklist(item);
-        li.innerHTML = `<div class="icon-box ${item.colorClass}"><span class="material-icons-round">${item.icon}</span></div><div class="list-text">${item.title}</div><div style="color: #666; font-size:0.8rem; margin-right:10px;">${formatDate(item.date)} at ${formatTime(item.time)}</div><span class="material-icons-round arrow">chevron_right</span>`;
-        listsContainer.appendChild(li);
+        // --- LIST ITEM (SWIPEABLE) ---
+        const wrapper = document.createElement('div');
+        wrapper.className = 'list-item-wrapper';
+        
+        // Actions (Behind)
+        const actions = document.createElement('div');
+        actions.className = 'list-item-actions';
+        actions.innerHTML = `
+            <div class="action-btn archive" onclick="archiveList(${item.id})"><span class="material-icons-round">archive</span></div>
+            <div class="action-btn delete" onclick="deleteList(${item.id})"><span class="material-icons-round">delete</span></div>
+        `;
+        
+        // Content (Front)
+        const content = document.createElement('div');
+        content.className = 'list-item-content';
+        content.innerHTML = `<div class="icon-box ${item.colorClass}"><span class="material-icons-round">${item.icon}</span></div><div class="list-text">${item.title}</div><div style="color: #666; font-size:0.8rem; margin-right:10px;">${formatDate(item.date)} ${progressStr}</div><span class="material-icons-round arrow">chevron_right</span>`;
+        
+        // Click to Open
+        content.onclick = (e) => {
+            // Prevent opening if swiping happened
+            if (wrapper.dataset.swiped === 'true') return;
+            openChecklist(item);
+        };
+
+        // --- SWIPE LOGIC ---
+        let startX = 0;
+        let currentTranslate = 0;
+        
+        content.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; });
+        content.addEventListener('touchmove', (e) => {
+            const touch = e.touches[0];
+            const diff = touch.clientX - startX;
+            if (diff < 0 && diff > -140) { // Only swipe left
+                currentTranslate = diff;
+                content.style.transform = `translateX(${diff}px)`;
+            }
+        });
+        content.addEventListener('touchend', (e) => {
+            if (currentTranslate < -70) { // Threshold to open
+                content.style.transform = `translateX(-140px)`;
+                wrapper.dataset.swiped = 'true';
+            } else {
+                content.style.transform = `translateX(0px)`;
+                wrapper.dataset.swiped = 'false';
+            }
+            startX = 0; currentTranslate = 0;
+        });
+
+        wrapper.appendChild(actions);
+        wrapper.appendChild(content);
+        listsContainer.appendChild(wrapper);
     });
 }
 
+// --- LIST ACTIONS ---
+function deleteList(id) {
+    if(confirm('Delete this list?')) {
+        checklists = checklists.filter(c => c.id !== id);
+        renderApp(); renderCalendar();
+    }
+}
+function archiveList(id) {
+    alert("Archived! (Simulated)");
+    // In real app, toggle isArchived flag and re-render
+    deleteList(id); // For now, just remove from view
+}
+
+// --- CHECKLIST ---
 function openChecklist(item) {
     currentEditingListId = item.id;
     isEditMode = false;
@@ -805,21 +860,43 @@ function updateChecklistUI(item) {
 
     const container = document.getElementById('cl-items-container');
     container.innerHTML = '';
-    item.items.forEach((txt, idx) => {
+    
+    // NEW DATA STRUCTURE SUPPORT: item is { text: "...", isChecked: bool }
+    item.items.forEach((obj, idx) => {
         if(isEditMode) {
             const row = document.createElement('div');
             row.className = 'checkbox-container';
             row.style.cursor = 'default';
-            row.innerHTML = `<span class="text" style="margin-left:0">${txt}</span><span class="material-icons-round delete-item-icon" onclick="deleteChecklistItem(${idx})">remove_circle</span>`;
+            row.innerHTML = `<span class="text" style="margin-left:0">${obj.text}</span><span class="material-icons-round delete-item-icon" onclick="deleteChecklistItem(${idx})">remove_circle</span>`;
             container.appendChild(row);
         } else {
             const label = document.createElement('label');
-            label.className = 'checkbox-container';
-            label.innerHTML = `<input type="checkbox"><span class="checkmark-box"></span><span class="text">${txt}</span>`;
+            label.className = `checkbox-container ${obj.isChecked ? 'checked' : ''}`;
+            
+            // Checkbox Input
+            const input = document.createElement('input');
+            input.type = 'checkbox';
+            input.checked = obj.isChecked;
+            input.onchange = () => toggleCheckItem(item.id, idx);
+            
+            label.innerHTML = `<span class="checkmark-box"></span><span class="text">${obj.text}</span>`;
+            label.prepend(input); // Add input first
             container.appendChild(label);
         }
     });
 }
+
+// TOGGLE ITEM CHECK
+function toggleCheckItem(listId, itemIndex) {
+    const list = checklists.find(c => c.id === listId);
+    if(list) {
+        list.items[itemIndex].isChecked = !list.items[itemIndex].isChecked;
+        // Re-render to update strikethrough and home screen progress
+        updateChecklistUI(list);
+        renderApp(); // Updates Home/Lists view immediately
+    }
+}
+
 function toggleEditChecklistMode() {
     if(isEditMode) saveChecklistDetails();
     else { isEditMode = true; updateChecklistUI(checklists.find(c => c.id == currentEditingListId)); }
@@ -842,7 +919,12 @@ function addChecklistItemInEdit() {
     const val = document.getElementById('add-cl-item-input').value.trim();
     if(val) {
         const index = checklists.findIndex(c => c.id == currentEditingListId);
-        if(index > -1) { checklists[index].items.push(val); updateChecklistUI(checklists[index]); document.getElementById('add-cl-item-input').value=''; }
+        if(index > -1) { 
+            // Add as Object
+            checklists[index].items.push({ text: val, isChecked: false }); 
+            updateChecklistUI(checklists[index]); 
+            document.getElementById('add-cl-item-input').value=''; 
+        }
     }
 }
 
@@ -864,10 +946,10 @@ function renderCategoryGrid() {
 
 function addTempItem() {
     const val = document.getElementById('new-item-input').value.trim();
-    if(val) { tempNewListItems.push(val); renderTempItems(); document.getElementById('new-item-input').value = ''; }
+    if(val) { tempNewListItems.push({ text: val, isChecked: false }); renderTempItems(); document.getElementById('new-item-input').value = ''; }
 }
 function renderTempItems() {
-    document.getElementById('temp-items-list').innerHTML = tempNewListItems.map((t, i) => `<div class="temp-tag">${t} <span style="color:red;cursor:pointer;margin-left:5px" onclick="removeTempItem(${i})">×</span></div>`).join('');
+    document.getElementById('temp-items-list').innerHTML = tempNewListItems.map((t, i) => `<div class="temp-tag">${t.text} <span style="color:red;cursor:pointer;margin-left:5px" onclick="removeTempItem(${i})">×</span></div>`).join('');
 }
 function removeTempItem(i) { tempNewListItems.splice(i, 1); renderTempItems(); }
 
