@@ -178,6 +178,7 @@ html_code = """
 
         .category-label { font-size: 0.9rem; font-weight: 500; color: #666; margin-bottom: 5px; align-self: flex-start; margin-left: 5px; }
         .category-grid { display: flex; gap: 12px; overflow-x: auto; padding: 10px 5px; width: 100%; margin-bottom: 10px; scrollbar-width: none; }
+        .category-grid::-webkit-scrollbar { display: none; }
         .category-option { width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; flex-shrink: 0; border: 2px solid transparent; transition: transform 0.2s; }
         .category-option.selected { border-color: #2A4298; transform: scale(1.1); box-shadow: 0 4px 8px rgba(0,0,0,0.2); border-width: 3px; }
         .category-option span { color: white; font-size: 26px; }
@@ -194,12 +195,13 @@ html_code = """
             flex-shrink: 0;
         }
 
+        /* Standard Swipe Actions (Behind) */
         .list-item-actions {
             position: absolute;
             top: 0;
             right: 0;
             height: 100%;
-            width: 160px; /* Space for 2 buttons */
+            width: 160px; 
             display: flex;
             z-index: 1;
         }
@@ -218,6 +220,22 @@ html_code = """
         .action-btn.unarchive { background-color: var(--success-color); }
         .action-btn.delete { background-color: var(--danger-color); border-radius: 0 20px 20px 0; }
 
+        /* VISIBLE Actions for Past Items (Front) */
+        .past-action-btn {
+            background: none; 
+            border: none; 
+            cursor: pointer;
+            padding: 8px; 
+            margin-left: 5px; 
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+        .past-action-btn:active { background-color: rgba(0,0,0,0.05); }
+        .past-action-btn span { font-size: 22px; }
+
         .list-item-content {
             position: relative;
             z-index: 2;
@@ -235,7 +253,7 @@ html_code = """
         .list-text { font-weight: 600; flex-grow: 1; margin-left: 15px; }
         
         /* Past Items Style */
-        .list-item-wrapper.past-item .list-item-content { opacity: 0.6; background: #E0E0E0; border-color: #aaa; }
+        .list-item-wrapper.past-item .list-item-content { opacity: 0.8; background: #E8E8E8; border-color: #aaa; }
 
         .switch-accounts-section { width: 100%; background: rgba(255,255,255,0.6); padding: 15px; border-radius: 20px; margin-top: 10px; text-align: center; }
         .users-row { display: flex; justify-content: center; gap: 15px; margin-top: 10px; flex-wrap: wrap; }
@@ -492,7 +510,11 @@ document.addEventListener('DOMContentLoaded', () => {
         splash.style.opacity = '0';
         setTimeout(() => {
             splash.style.display = 'none';
-            if (users.length === 0) startAddUserFlow(); else navigateTo('home-screen');
+            if (users.length === 0) {
+                startAddUserFlow(); 
+            } else {
+                navigateTo('home-screen');
+            }
         }, 500);
     }, 2000);
     renderCategoryGrid();
@@ -500,7 +522,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderApp();
 });
 
-// TOUCH DND FIX: Ghost element handling (Only for user avatars if needed, but deleted per request. Keeping logic clean just in case)
+// TOUCH DND FIX: Ghost element handling
 let draggedItem = null;
 let touchGhost = null;
 
@@ -672,14 +694,32 @@ function updateProfileDisplay() {
         const div = document.createElement('div');
         div.className = `small-user-avatar ${u.id === activeUserId ? 'active-user' : ''}`;
         div.innerHTML = `<img src="${u.avatar}">`;
+        div.dataset.userId = u.id; 
+        
         div.onclick = () => {
             activeUserId = u.id;
             updateProfileDisplay();
             renderApp(); 
             navigateTo('home-screen');
         };
+        // Removed DND logic for users since we have a button now
         otherUsersContainer.appendChild(div);
     });
+}
+
+function setupTrashDragDrop() {
+   // Replaced with button, keeping empty for compatibility
+}
+
+function deleteUserById(id) {
+    if(users.length <= 1) { alert("Cannot delete the only user."); return; }
+    if(confirm("Delete this user and their data?")) {
+        checklists = checklists.filter(item => item.userId !== id);
+        users = users.filter(u => u.id !== id);
+        if(activeUserId === id) activeUserId = users[0].id;
+        updateProfileDisplay();
+        renderApp();
+    }
 }
 
 function deleteCurrentUser() {
@@ -772,7 +812,6 @@ function renderApp() {
     pastLists.sort((a, b) => new Date(b.date) - new Date(a.date));
     const finalLists = [...futureLists, ...pastLists];
 
-    // --- RENDER ---
     finalLists.forEach(item => {
         const total = item.items.length;
         const checkedCount = item.items.filter(i => i.isChecked).length;
@@ -796,57 +835,85 @@ function renderApp() {
         wrapper.className = 'list-item-wrapper';
         if(isPast && !isViewingArchived) wrapper.classList.add('past-item');
 
-        const actions = document.createElement('div');
-        actions.className = 'list-item-actions';
-        
-        if (isViewingArchived) {
-            actions.innerHTML = `
-                <div class="action-btn unarchive" onclick="unarchiveList(${item.id})"><span class="material-icons-round">unarchive</span></div>
-                <div class="action-btn delete" onclick="deleteList(${item.id})"><span class="material-icons-round">delete</span></div>
+        // VISIBLE ACTIONS FOR PAST ITEMS
+        if (isPast && !isViewingArchived) {
+            // No Swipe, Direct Buttons on front content
+            const content = document.createElement('div');
+            content.className = 'list-item-content';
+            content.style.cursor = "pointer";
+            
+            content.innerHTML = `
+                <div class="icon-box ${item.colorClass}"><span class="material-icons-round">${item.icon}</span></div>
+                <div class="list-text">${item.title}</div>
+                <div style="color: #666; font-size:0.8rem; margin-right:10px;">${formatDate(item.date)} ${progressStr}</div>
+                <div style="display:flex; margin-left:auto;">
+                    <button class="past-action-btn" style="color:var(--archive-color)" onclick="event.stopPropagation(); archiveList(${item.id})">
+                        <span class="material-icons-round">archive</span>
+                    </button>
+                    <button class="past-action-btn" style="color:var(--danger-color)" onclick="event.stopPropagation(); deleteList(${item.id})">
+                        <span class="material-icons-round">delete</span>
+                    </button>
+                </div>
             `;
+            content.onclick = () => openChecklist(item);
+            wrapper.appendChild(content);
+
         } else {
-            actions.innerHTML = `
-                <div class="action-btn archive" onclick="archiveList(${item.id})"><span class="material-icons-round">archive</span></div>
-                <div class="action-btn delete" onclick="deleteList(${item.id})"><span class="material-icons-round">delete</span></div>
-            `;
-        }
-        
-        const content = document.createElement('div');
-        content.className = 'list-item-content';
-        content.innerHTML = `<div class="icon-box ${item.colorClass}"><span class="material-icons-round">${item.icon}</span></div><div class="list-text">${item.title}</div><div style="color: #666; font-size:0.8rem; margin-right:10px; display:flex; align-items:center;">${formatDate(item.date)} ${progressStr}</div><span class="material-icons-round arrow">chevron_right</span>`;
-        
-        content.onclick = (e) => {
-            if (wrapper.dataset.swiped === 'true') return;
-            openChecklist(item);
-        };
-
-        // Swipe Logic
-        let startX = 0;
-        let currentTranslate = 0;
-        const maxSwipe = -160; 
-
-        content.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; });
-        content.addEventListener('touchmove', (e) => {
-            const touch = e.touches[0];
-            const diff = touch.clientX - startX;
-            if (diff < 0 && diff > (maxSwipe*2)) { 
-                currentTranslate = diff;
-                content.style.transform = `translateX(${diff}px)`;
-            }
-        });
-        content.addEventListener('touchend', (e) => {
-            if (currentTranslate < (maxSwipe/2)) { 
-                content.style.transform = `translateX(${maxSwipe}px)`;
-                wrapper.dataset.swiped = 'true';
+            // STANDARD SWIPE BEHAVIOR
+            const actions = document.createElement('div');
+            actions.className = 'list-item-actions';
+            
+            if (isViewingArchived) {
+                actions.innerHTML = `
+                    <div class="action-btn unarchive" onclick="unarchiveList(${item.id})"><span class="material-icons-round">unarchive</span></div>
+                    <div class="action-btn delete" onclick="deleteList(${item.id})"><span class="material-icons-round">delete</span></div>
+                `;
             } else {
-                content.style.transform = `translateX(0px)`;
-                wrapper.dataset.swiped = 'false';
+                // Active List: Archive AND Delete
+                actions.innerHTML = `
+                    <div class="action-btn archive" onclick="archiveList(${item.id})"><span class="material-icons-round">archive</span></div>
+                    <div class="action-btn delete" onclick="deleteList(${item.id})"><span class="material-icons-round">delete</span></div>
+                `;
             }
-            startX = 0; currentTranslate = 0;
-        });
+            
+            const content = document.createElement('div');
+            content.className = 'list-item-content';
+            content.innerHTML = `<div class="icon-box ${item.colorClass}"><span class="material-icons-round">${item.icon}</span></div><div class="list-text">${item.title}</div><div style="color: #666; font-size:0.8rem; margin-right:10px; display:flex; align-items:center;">${formatDate(item.date)} ${progressStr}</div><span class="material-icons-round arrow">chevron_right</span>`;
+            
+            content.onclick = (e) => {
+                if (wrapper.dataset.swiped === 'true') return;
+                openChecklist(item);
+            };
 
-        wrapper.appendChild(actions);
-        wrapper.appendChild(content);
+            // Swipe Logic
+            let startX = 0;
+            let currentTranslate = 0;
+            const maxSwipe = -160; 
+
+            content.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; });
+            content.addEventListener('touchmove', (e) => {
+                const touch = e.touches[0];
+                const diff = touch.clientX - startX;
+                if (diff < 0 && diff > (maxSwipe*2)) { 
+                    currentTranslate = diff;
+                    content.style.transform = `translateX(${diff}px)`;
+                }
+            });
+            content.addEventListener('touchend', (e) => {
+                if (currentTranslate < (maxSwipe/2)) { 
+                    content.style.transform = `translateX(${maxSwipe}px)`;
+                    wrapper.dataset.swiped = 'true';
+                } else {
+                    content.style.transform = `translateX(0px)`;
+                    wrapper.dataset.swiped = 'false';
+                }
+                startX = 0; currentTranslate = 0;
+            });
+
+            wrapper.appendChild(actions);
+            wrapper.appendChild(content);
+        }
+
         listsContainer.appendChild(wrapper);
     });
 }
